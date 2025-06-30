@@ -1,0 +1,44 @@
+import winston from 'winston';
+import { serverConfig } from '.';
+
+const logger = winston.createLogger({
+    level: 'info',
+    defaultMeta: {
+        serviceName: 'auth-service',
+    },
+    transports: [
+        new winston.transports.Console({
+            level: 'info',
+            format: winston.format.combine(
+                winston.format.json(),
+                winston.format.timestamp(),
+                winston.format.prettyPrint(),
+            ),
+            silent: serverConfig.NodeENV == 'test' ? true : false,
+        }),
+
+        new winston.transports.File({
+            level: 'info',
+            format: winston.format.combine(
+                winston.format.json(),
+                winston.format.timestamp(),
+                winston.format.prettyPrint(),
+            ),
+            dirname: 'logs',
+            filename: 'index.log',
+        }),
+
+        new winston.transports.File({
+            level: 'error',
+            format: winston.format.combine(
+                winston.format.json(),
+                winston.format.timestamp(),
+                winston.format.prettyPrint(),
+            ),
+            dirname: 'logs',
+            filename: 'error.log',
+        }),
+    ],
+});
+
+export default logger;
