@@ -1,13 +1,17 @@
+import app from './app';
 import { serverConfig } from './config';
 
-function helloword(name: string) {
-    console.log(`Hello ${name}`);
-}
-function helloWorld(name: string) {
-    console.log(`Hello ${name}`);
-}
+const startServer = () => {
+    try {
+        const PORT = serverConfig.PORT || 5000;
 
-console.log(serverConfig.PORT);
-helloword('Neel Patel');
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Error starting the server:', error);
+        process.exit(1);
+    }
+};
 
-helloWorld('Jay Patel');
+startServer();
