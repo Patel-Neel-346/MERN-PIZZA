@@ -1,46 +1,46 @@
 {
-    "name": "mern-pizza",
-    "version": "1.0.0",
-    "description": "The User Management service",
-    "main": "index.js",
-    "scripts": {
-        "dev": "nodemon src/server.ts",
-        "lint": "eslint src",
-        "lint:fix": "eslint src --fix",
-        "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
-        "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",
-        "prepare": "husky",
-        "test": "jest --watch --runInBand"
-    },
-    "author": "Neel Patel <neelpatel6340@gmail.com>",
-    "license": "ISC",
-    "devDependencies": {
-        "@eslint/js": "^9.30.0",
-        "@types/eslint__js": "^8.42.3",
-        "@types/express": "^5.0.3",
-        "@types/http-errors": "^2.0.5",
-        "@types/jest": "^30.0.0",
-        "@types/node": "^24.0.7",
-        "eslint": "^9.30.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^16.1.2",
-        "nodemon": "^3.1.10",
-        "prettier": "3.6.2",
-        "ts-jest": "^29.4.0",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.8.3"
-    },
-    "lint-staged": {
-        "*.ts": [
-            "npm run format:fix",
-            "npm run lint"
-        ]
-    },
-    "dependencies": {
-        "dotenv": "^17.0.0",
-        "express": "^5.1.0",
-        "http-errors": "^2.0.0",
-        "typescript-eslint": "^8.35.1",
-        "winston": "^3.17.0"
-    }
+  "name": "mern-pizza",
+  "version": "1.0.0",
+  "description": "The User Management service",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
+    "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",
+    "prepare": "husky",
+    "test": "jest --watch --runInBand"
+  },
+  "author": "Neel Patel <neelpatel6340@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.30.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/express": "^5.0.3",
+    "@types/http-errors": "^2.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.7",
+    "eslint": "^9.30.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "nodemon": "^3.1.10",
+    "prettier": "3.6.2",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run format:fix",
+      "npm run lint"
+    ]
+  },
+  "dependencies": {
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "http-errors": "^2.0.0",
+    "typescript-eslint": "^8.35.1",
+    "winston": "^3.17.0"
+  }
 }
