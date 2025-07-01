@@ -10,6 +10,7 @@ export default [
             'coverage',
             'build',
             'eslint.config.mjs',
+            'jest.config.js',
         ],
     },
 
@@ -25,9 +26,10 @@ export default [
                 },
             },
             // Optionally:
-            // rules: {
-            //   'no-console': 'error',
-            // },
+            rules: {
+                //   'no-console': 'error',
+                '@typescript-eslint/no-misused-promises': 'off',
+            },
         },
     ),
 ];
