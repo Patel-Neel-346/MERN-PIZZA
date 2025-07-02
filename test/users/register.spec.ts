@@ -50,6 +50,28 @@ describe('POST /auth/register', () => {
                 (respone.headers as Record<string, string>)['content-type'],
             ).toEqual(expect.stringContaining('json'));
         });
+
+        it('should presist the user to database', async () => {
+            //AAA formula
+            //1 Arrange -- prepare all data for input
+            //2 Act --main act for trigger or call
+            //3 Assert check what are we check Main Check Except
+
+            //1 step
+            const userData = {
+                firstName: 'Neel',
+                lastName: 'Patel',
+                email: 'neel@gmail.com',
+                password: 'secret123',
+            };
+
+            //2 step
+            const respone = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //3 step
+        });
     });
     describe('Missing Fields', () => {});
 });
