@@ -14,7 +14,7 @@ const logger = winston.createLogger({
                 winston.format.timestamp(),
                 winston.format.prettyPrint(),
             ),
-            silent: serverConfig.NodeENV == 'test' ? true : false,
+            silent: serverConfig.NODEENV == 'test' ? true : false,
         }),
 
         new winston.transports.File({
