@@ -5,7 +5,7 @@ import logger from './config/logger';
 const app = express();
 
 app.get('/', (_req: express.Request, res: express.Response) => {
-    res.send('Hello World Neel Patel! HI');
+    res.send('Hello World Neel Patel! HI Neel Patel');
 });
 
 //global error handler and alwayes last in all routes
