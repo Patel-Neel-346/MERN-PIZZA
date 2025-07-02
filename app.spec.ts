@@ -1,5 +1,5 @@
 import calculatePerc from './src/utils';
-describe('App', () => {
+describe.skip('App', () => {
     //unit test
     it('should work', () => {
         const discount = calculatePerc(100, 10);

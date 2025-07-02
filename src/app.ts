@@ -8,6 +8,16 @@ app.get('/', (_req: express.Request, res: express.Response) => {
     res.send('Hello World Neel Patel! HI Neel Patel');
 });
 
+app.post(
+    '/auth/register',
+    (
+        _req: express.Request,
+        res: express.Response,
+        _next: express.NextFunction,
+    ) => {
+        res.status(201).send();
+    },
+);
 //global error handler and alwayes last in all routes
 //added ERROR Handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
