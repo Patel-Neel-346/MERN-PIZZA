@@ -11,17 +11,17 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 app.post(
     '/auth/register',
     (
-        _req: express.Request,
+        req: express.Request,
         res: express.Response,
-        _next: express.NextFunction,
+        next: express.NextFunction,
     ) => {
-        res.status(201).send();
+        res.status(201).json();
     },
 );
 //global error handler and alwayes last in all routes
 //added ERROR Handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     logger.error(err.message);
     const statusCode = err.statusCode || 500;
 
