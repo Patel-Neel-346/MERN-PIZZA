@@ -38,6 +38,16 @@ const logger = winston.createLogger({
             dirname: 'logs',
             filename: 'error.log',
         }),
+        new winston.transports.File({
+            level: 'debug',
+            format: winston.format.combine(
+                winston.format.json(),
+                winston.format.timestamp(),
+                winston.format.prettyPrint(),
+            ),
+            dirname: 'logs',
+            filename: 'debug.log',
+        }),
     ],
 });
 
