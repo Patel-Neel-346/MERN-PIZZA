@@ -13,8 +13,7 @@ export const AppDataSource = new DataSource({
 
     //IMPOTANT NOTICE !!!!!!!!!!!!!!!!!!!!!!!!!!
     //Dont use this in Production use or do false only do in test and test for true
-    synchronize:
-        serverConfig.NODEENV === 'test' || serverConfig.NODEENV === 'dev', //only true in development && test development false in Production :xD
+    synchronize: false, //only true in development && test development false in Production :xD
     logging: false,
     entities: [User], //tables ,documents
     migrations: [],

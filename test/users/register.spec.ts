@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import { truncateTables } from '../utiles/index';
 import { UserData } from '../../src/types';
+import { Roles } from '../../src/constants';
 
 describe('POST /auth/register', () => {
     let Connection: DataSource;
@@ -16,7 +17,9 @@ describe('POST /auth/register', () => {
     beforeEach(async () => {
         //database truncate  for testing
 
-        await truncateTables(Connection);
+        // await truncateTables(Connection);
+        await Connection.dropDatabase();
+        await Connection.synchronize();
     });
 
     afterAll(async () => {
@@ -140,6 +143,27 @@ describe('POST /auth/register', () => {
             //3
             expect(user).toBeDefined();
             expect(returnedUser.id).toBe(user?.id);
+        });
+
+        it('should add Role to New Users', async () => {
+            //1
+            const userData = {
+                firstName: 'Neel',
+                lastName: 'Patel',
+                email: 'NeelPatel@gmail.com',
+                password: '123456',
+            };
+
+            //2
+            const reponse = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //3
+            const userRepository = Connection.getRepository(User);
+            const user = await userRepository.find();
+            expect(user[0]).toHaveProperty('role');
+            expect(user[0].role).toBe(Roles.CUSTOMER);
         });
     });
     describe('Missing Fields', () => {});
