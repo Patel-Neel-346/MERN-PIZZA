@@ -28,7 +28,7 @@ describe('POST /auth/register', () => {
     });
 
     describe('Given All Fields', () => {
-        it.skip('should return 201 status code', async () => {
+        it('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -51,7 +51,7 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(201);
         });
 
-        it.skip('should return valid json format', async () => {
+        it('should return valid json format', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -76,7 +76,7 @@ describe('POST /auth/register', () => {
             ).toEqual(expect.stringContaining('json'));
         });
 
-        it.skip('should presist the user to database', async () => {
+        it('should presist the user to database', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -164,6 +164,30 @@ describe('POST /auth/register', () => {
             const user = await userRepository.find();
             expect(user[0]).toHaveProperty('role');
             expect(user[0].role).toBe(Roles.CUSTOMER);
+        });
+
+        it('should store the hased password in database', async () => {
+            //1
+            const userData = {
+                firstName: 'ved',
+                lastName: 'veghani',
+                email: 'ved@gmail.com',
+                password: 'ved123',
+            };
+
+            //2
+
+            const respones = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //3 assert
+            const userRepository = Connection.getRepository(User);
+            const user = await userRepository.find();
+
+            expect(user[0].password).not.toBe(userData.password);
+            expect(user[0].password).toHaveLength(60);
+            expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
         });
     });
     describe('Missing Fields', () => {});
