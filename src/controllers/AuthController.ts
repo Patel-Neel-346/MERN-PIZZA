@@ -12,12 +12,15 @@ export class AuthController {
         next: NextFunction,
     ) {
         const { firstName, lastName, email, password } = req.body;
-        await this.userService.createUser({
+        const user = await this.userService.createUser({
             firstName,
             lastName,
             email,
             password,
         });
-        res.status(201).json();
+
+        console.log(user);
+
+        res.status(201).json({ user });
     }
 }

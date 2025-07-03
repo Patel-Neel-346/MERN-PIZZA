@@ -5,6 +5,7 @@ import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
 
 const UserRouter = express.Router();
+
 const userRepository = AppDataSource.getRepository(User);
 const userService = new UserService(userRepository);
 const authcontroller = new AuthController(userService);

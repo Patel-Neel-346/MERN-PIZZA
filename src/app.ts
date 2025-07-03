@@ -9,18 +9,7 @@ app.use(express.json());
 app.get('/', (_req: express.Request, res: express.Response) => {
     res.send('Hello World Neel Patel! HI Neel Patel');
 });
-
-// app.post(
-//     '/auth/register',
-//     (
-//         req: express.Request,
-//         res: express.Response,
-//         next: express.NextFunction,
-//     ) => {
-//         res.status(201).json();
-//     },
-// );
-
+//routes
 app.use('/auth', UserRouter);
 //global error handler and alwayes last in all routes
 //added ERROR Handler

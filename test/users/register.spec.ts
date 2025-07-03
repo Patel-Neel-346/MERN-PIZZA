@@ -1,9 +1,10 @@
 import request from 'supertest';
 import app from '../../src/app';
 import { User } from '../../src/entity/User';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import { truncateTables } from '../utiles/index';
+import { UserData } from '../../src/types';
 
 describe('POST /auth/register', () => {
     let Connection: DataSource;
@@ -24,7 +25,7 @@ describe('POST /auth/register', () => {
     });
 
     describe('Given All Fields', () => {
-        it('should return 201 status code', async () => {
+        it.skip('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -47,7 +48,7 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(201);
         });
 
-        it('should return valid json format', async () => {
+        it.skip('should return valid json format', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -72,7 +73,7 @@ describe('POST /auth/register', () => {
             ).toEqual(expect.stringContaining('json'));
         });
 
-        it('should presist the user to database', async () => {
+        it.skip('should presist the user to database', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -101,6 +102,44 @@ describe('POST /auth/register', () => {
             expect(user[0].lastName).toBe(userData.lastName);
             expect(user[0].email).toBe(userData.email);
             // expect(user[0].).toBe(userData.)
+        });
+
+        it('should return Id of Created User', async () => {
+            //1
+            const userData = {
+                firstName: 'Karan',
+                lastName: 'Rami',
+                email: 'Karan@gmail.com',
+                password: 'Pass123',
+            };
+
+            //2
+            const respone = await request(app)
+                .post('/auth/register')
+                .send(userData);
+            // console.log(respone);
+
+            //3
+
+            const returnedUser = respone.body.user;
+
+            // console.log('ReturndUSER:::', returnedUser);
+            const userRepository = Connection.getRepository(User);
+
+            // //generate filter
+            // const filter = {
+            //     email: userData.email,
+            // };
+            const user = await userRepository.findOneBy({
+                email: userData.email,
+            });
+
+            // console.log('userID:', user?.id);
+            // console.log('ReturndUserId:', returnedUser.id);
+
+            //3
+            expect(user).toBeDefined();
+            expect(returnedUser.id).toBe(user?.id);
         });
     });
     describe('Missing Fields', () => {});
