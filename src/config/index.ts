@@ -1,9 +1,9 @@
 import { config } from 'dotenv';
 import path from 'path';
-import logger from './logger';
+// import logger from './logger';
 
 config({
-    path: path.join(__dirname, `../../.env.${process.env.NODEENV}`),
+    path: path.join(__dirname, `../../.env.dev`),
 });
 
 const { PORT, NODEENV, DB_HOST, DB_PORT, DB_PASSWORD, DB_NAME, DB_USERNAME } =

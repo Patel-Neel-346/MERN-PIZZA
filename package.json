@@ -10,7 +10,7 @@
       "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
       "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",
       "prepare": "husky",
-      "test": "jest --watch --runInBand",
+      "test": "cross-env NODEENV=dev jest --watch --runInBand",
       "start": "ts-node src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs"
    },
