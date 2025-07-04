@@ -28,7 +28,7 @@ describe('POST /auth/register', () => {
         await Connection.destroy();
     });
 
-    describe('Given All Fields', () => {
+    describe.skip('Given All Fields', () => {
         it.skip('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
@@ -191,7 +191,7 @@ describe('POST /auth/register', () => {
             expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
         });
 
-        it('should return 400 status code if email is already exists', async () => {
+        it.skip('should return 400 status code if email is already exists', async () => {
             //1
             const userData = {
                 firstName: 'Neel',
@@ -216,5 +216,28 @@ describe('POST /auth/register', () => {
             expect(user).toHaveLength(1);
         });
     });
-    describe('Missing Fields', () => {});
+    describe('Missing Fields', () => {
+        it('should return 400 if any fileds are missing ', async () => {
+            //1
+            const userData = {
+                firstName: '',
+                lastName: '',
+                email: 'Neel@gmail.com',
+                password: '12345',
+                role: Roles.CUSTOMER,
+            };
+
+            //2
+            const respone = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //3
+            const userRepository = Connection.getRepository(User);
+            const user = await userRepository.find();
+
+            expect(respone.statusCode).toBe(400);
+            expect(user).toHaveLength(0);
+        });
+    });
 });

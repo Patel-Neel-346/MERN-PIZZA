@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
 
-    async createUser({ firstName, lastName, email, password }: UserData) {
+    async createUser({ firstName, lastName, email, password, role }: UserData) {
         // const userRepository = AppDataSource.getRepository(User);
         // const user = await this.userRepository.findOneBy({ email: email });
         const user = await this.userRepository.findOne({
@@ -32,7 +32,7 @@ export class UserService {
                 lastName,
                 email,
                 password: hashedPassword,
-                role: Roles.CUSTOMER,
+                role: role,
             });
         } catch (err) {
             const error = createHttpError(
