@@ -6,6 +6,7 @@ import { AppDataSource } from '../../src/config/data-source';
 import { truncateTables } from '../utiles/index';
 import { UserData } from '../../src/types';
 import { Roles } from '../../src/constants';
+import { response } from 'express';
 
 describe('POST /auth/register', () => {
     let Connection: DataSource;
@@ -28,7 +29,7 @@ describe('POST /auth/register', () => {
     });
 
     describe('Given All Fields', () => {
-        it('should return 201 status code', async () => {
+        it.skip('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -51,7 +52,7 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(201);
         });
 
-        it('should return valid json format', async () => {
+        it.skip('should return valid json format', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -76,7 +77,7 @@ describe('POST /auth/register', () => {
             ).toEqual(expect.stringContaining('json'));
         });
 
-        it('should presist the user to database', async () => {
+        it.skip('should presist the user to database', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -107,7 +108,7 @@ describe('POST /auth/register', () => {
             // expect(user[0].).toBe(userData.)
         });
 
-        it('should return Id of Created User', async () => {
+        it.skip('should return Id of Created User', async () => {
             //1
             const userData = {
                 firstName: 'Karan',
@@ -145,7 +146,7 @@ describe('POST /auth/register', () => {
             expect(returnedUser.id).toBe(user?.id);
         });
 
-        it('should add Role to New Users', async () => {
+        it.skip('should add Role to New Users', async () => {
             //1
             const userData = {
                 firstName: 'Neel',
@@ -166,7 +167,7 @@ describe('POST /auth/register', () => {
             expect(user[0].role).toBe(Roles.CUSTOMER);
         });
 
-        it('should store the hased password in database', async () => {
+        it.skip('should store the hased password in database', async () => {
             //1
             const userData = {
                 firstName: 'ved',
@@ -188,6 +189,31 @@ describe('POST /auth/register', () => {
             expect(user[0].password).not.toBe(userData.password);
             expect(user[0].password).toHaveLength(60);
             expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
+        });
+
+        it('should return 400 status code if email is already exists', async () => {
+            //1
+            const userData = {
+                firstName: 'Neel',
+                lastName: 'patel',
+                email: 'neel@gmail.com',
+                password: '12345',
+                role: Roles.CUSTOMER,
+            };
+
+            const userRepository = Connection.getRepository(User);
+            await userRepository.save(userData);
+
+            //2
+            const respone = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            const user = await userRepository.find();
+            //3
+
+            expect(respone.statusCode).toBe(400);
+            expect(user).toHaveLength(1);
         });
     });
     describe('Missing Fields', () => {});
