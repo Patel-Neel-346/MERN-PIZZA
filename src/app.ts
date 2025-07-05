@@ -3,9 +3,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
 import logger from './config/logger';
 import UserRouter from './routes/UserRoutes';
+import cookieParser from 'cookie-parser';
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.get('/', (_req: express.Request, res: express.Response) => {
     res.send('Hello World Neel Patel! HI Neel Patel');
 });

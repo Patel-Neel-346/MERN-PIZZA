@@ -4,7 +4,9 @@ import { UserService } from '../services/userService';
 import { Logger } from 'winston';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
-
+import { JwtPayload, sign } from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 export class AuthController {
     public userService;
     constructor(
@@ -43,6 +45,44 @@ export class AuthController {
                 role,
             });
 
+            const payload: JwtPayload = {
+                sub: String(user.id),
+                role: user.role,
+            };
+            const privateKey = fs.readFileSync(
+                path.join(__dirname, '../../certs/private.pem'),
+            );
+
+            const PrivateKey = privateKey
+                .toString()
+                .replace('-----BEGIN RSA PRIVATE KEY-----', '')
+                .replace('-----END RSA PRIVATE KEY-----', '')
+                .replace(/\r?\n|\r/g, '')
+                .trim();
+
+            const accessToken = sign(payload, PrivateKey, {
+                algorithm: 'HS256',
+                expiresIn: '1h', // 1 hour
+                issuer: 'auth-service',
+            });
+            const refreshToken = sign(payload, PrivateKey, {
+                algorithm: 'HS256',
+                expiresIn: '1h', // 1 hour
+                issuer: 'auth-service',
+            });
+
+            res.cookie('accessToken', accessToken, {
+                domain: 'localhost',
+                sameSite: 'strict',
+                maxAge: 1000 * 60,
+                httpOnly: true,
+            });
+            res.cookie('refreshToken', refreshToken, {
+                domain: 'localhost',
+                sameSite: 'strict',
+                maxAge: 1000 * 60 * 60 * 24 * 365, // 100
+                httpOnly: true,
+            });
             // console.log(user);
 
             this.logger.info('User has been Register:::)', { user });

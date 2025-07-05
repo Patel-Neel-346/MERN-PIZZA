@@ -128,7 +128,7 @@
     "**/*.js",          // include JS config/test files like jest.config.js
     "app.spec.ts",      // include top-level test file
     "jest.config.js"    // include Jest config
-  ],
+, "scripts/generatekeys.mjs"  ],
   "compilerOptions": {
     /* Project Structure */
     "rootDir": "." ,

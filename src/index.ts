@@ -9,7 +9,7 @@ AppDataSource.initialize()
         user.lastName = 'Saw';
         // user.age = 25;
         await AppDataSource.manager.save(user);
-        console.log('Saved a new user with id: ' + user.id);
+        console.log('Saved a new user with id: -' + user.id);
 
         console.log('Loading users from the database...');
         const users = await AppDataSource.manager.find(User);

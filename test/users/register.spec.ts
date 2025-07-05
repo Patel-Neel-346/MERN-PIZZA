@@ -3,7 +3,7 @@ import app from '../../src/app';
 import { User } from '../../src/entity/User';
 import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
-import { truncateTables } from '../utiles/index';
+import { isJWT, truncateTables } from '../utiles/index';
 import { UserData } from '../../src/types';
 import { Roles } from '../../src/constants';
 import { response } from 'express';
@@ -28,7 +28,7 @@ describe('POST /auth/register', () => {
         await Connection.destroy();
     });
 
-    describe.skip('Given All Fields', () => {
+    describe('Given All Fields', () => {
         it.skip('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
@@ -215,8 +215,52 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(400);
             expect(user).toHaveLength(1);
         });
+
+        it('should return access token and refresh token in cookies ', async () => {
+            //1
+            const userData = {
+                firstName: 'Neel',
+                lastName: 'Patel',
+                email: 'neelPatel@gmail.com',
+                password: '123456',
+                role: Roles.CUSTOMER,
+            };
+            let accessToken: string | null = null,
+                refreshToken: string | null = null;
+
+            //2 act
+            const respones = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //3 assert
+            interface Headers {
+                ['set-cookie']?: string[];
+            }
+            // console.log('respones.json:', respones.body);
+
+            const cookies = (respones.header as Headers)['set-cookie'] || [];
+            // console.log('Cookies:', cookies);
+            // console.log('response.headers:', respones.header);
+            cookies.forEach((cooke) => {
+                if (cooke.startsWith('accessToken')) {
+                    accessToken = cooke.split(';')[0].split('=')[1];
+                }
+                if (cooke.startsWith('refreshToken')) {
+                    refreshToken = cooke.split(';')[0].split('=')[1];
+                }
+            });
+            // console.log('Access Token:', accessToken);
+            // console.log('Refresh Token:', refreshToken);
+
+            expect(accessToken).not.toBeNull();
+            expect(refreshToken).not.toBeNull();
+
+            expect(isJWT(accessToken)).toBeTruthy();
+            expect(isJWT(refreshToken)).toBeTruthy();
+        });
     });
-    describe('Missing Fields', () => {
+    describe.skip('Missing Fields', () => {
         it('should return 400 if any fileds are missing ', async () => {
             //1
             const userData = {
@@ -239,5 +283,18 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(400);
             expect(user).toHaveLength(0);
         });
+
+        it('should return 400 status code if firstname is missing', async () => {});
+        it('should return 400 status code if lastname is missing', async () => {});
+
+        it('should return 400 status code if password is missing', async () => {});
+
+        // it('should return 400 if email is missing '),async;
+    });
+
+    describe.skip('fields are not in proper formate', () => {
+        it('should return 400 status code if password length is less than 6 chars', async () => {});
+
+        it('should return 400 status code if email is not valid', async () => {});
     });
 });
