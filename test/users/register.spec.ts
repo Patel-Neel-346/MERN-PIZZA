@@ -260,8 +260,8 @@ describe('POST /auth/register', () => {
             expect(isJWT(refreshToken)).toBeTruthy();
         });
     });
-    describe.skip('Missing Fields', () => {
-        it.skip('should return 400 if any fileds are missing ', async () => {
+    describe('Missing Fields', () => {
+        it('should return 400 if any fileds are missing ', async () => {
             //1
             const userData = {
                 firstName: '',
@@ -284,17 +284,121 @@ describe('POST /auth/register', () => {
             expect(user).toHaveLength(0);
         });
 
-        it('should return 400 status code if firstname is missing', async () => {});
-        it('should return 400 status code if lastname is missing', async () => {});
+        it('should return 400 status code if firstName is missing', async () => {
 
-        it('should return 400 status code if password is missing', async () => {});
+            //1 
+            const userData={
+                firstName: ' ',
+                lastName:'patel',
+                email:'neelpatel6340@gmail.com',
+                password:'123',
+                role:Roles.CUSTOMER
+            } 
+
+            //2
+
+            const respone= await request(app).post('/auth/register').send(userData)
+
+
+            //3
+            const userRepository= Connection.getRepository(User)
+            const user = await userRepository.find()
+
+            expect(respone.statusCode).toBe(400)
+            // expect(user[0].firstName).not.toBeNull()
+        });
+        it('should return 400 status code if LastName is missing', async () => {
+            
+            //1 
+            const userData={
+                firstName: 'Neel',
+                lastName:' ',
+                email:'neelpatel6340@gmail.com',
+                password:'123',
+                role:Roles.CUSTOMER
+            } 
+
+            //2
+
+            const respone= await request(app).post('/auth/register').send(userData)
+
+
+            //3
+            const userRepository= Connection.getRepository(User)
+            const user = await userRepository.find()
+
+            expect(respone.statusCode).toBe(400)
+        });
+
+        it('should return 400 status code if password is missing', async () => {
+            
+            //1 
+            const userData={
+                firstName: 'Neel',
+                lastName:'patel',
+                email:'neelpatel6340@gmail.com',
+                password:' ',
+                role:Roles.CUSTOMER
+            } 
+
+            //2
+
+            const respone= await request(app).post('/auth/register').send(userData)
+
+
+            //3
+            const userRepository= Connection.getRepository(User)
+            const user = await userRepository.find()
+
+            expect(respone.statusCode).toBe(400)
+        });
 
         // it('should return 400 if email is missing '),async;
     });
 
-    describe.skip('fields are not in proper formate', () => {
-        it('should return 400 status code if password length is less than 6 chars', async () => {});
+    describe('fields are not in proper formate', () => {
+        it('should return 400 status code if password length is less than 6 chars', async () => {
+            //1 
+            const userData={
+                firstName:"Neel",
+                lastName:"patel",
+                email:"neelpatel6340@gmail.com",
+                password:"12345",
+                role:Roles.CUSTOMER
+            }
 
-        it('should return 400 status code if email is not valid', async () => {});
+            //2
+            const response= await request(app).post('/auth/register').send(userData)
+
+            //3
+            const userRepository= Connection.getRepository(User)
+
+            const user = await userRepository.find()
+
+
+            expect(response.statusCode).toBe(400)
+        });
+
+        it('should return 400 status code if email is not valid', async () => {
+             //1 
+            const userData={
+                firstName:"Neel",
+                lastName:"patel",
+                email:"neelpatel6340@gmail.com",
+                password:"12345",
+                role:Roles.CUSTOMER
+            }
+
+            //2
+            const response= await request(app).post('/auth/register').send(userData)
+
+            //3
+            const userRepository= Connection.getRepository(User)
+
+            const user = await userRepository.find()
+
+
+            expect(response.statusCode).toBe(400)
+        });
     });
 });
