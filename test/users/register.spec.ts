@@ -261,7 +261,7 @@ describe('POST /auth/register', () => {
         });
     });
     describe.skip('Missing Fields', () => {
-        it('should return 400 if any fileds are missing ', async () => {
+        it.skip('should return 400 if any fileds are missing ', async () => {
             //1
             const userData = {
                 firstName: '',
