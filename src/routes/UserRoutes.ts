@@ -7,6 +7,8 @@ import logger from '../config/logger';
 import registerValidator from '../validators/register-validator';
 import { TokenService } from '../services/TokenService';
 import { RefreshToken } from '../entity/RefreshToken';
+import loginValidator from '../validators/login-validator';
+import { CredentialService } from '../services/CredentialService';
 // import { body } from 'express-validator';
 
 //router
@@ -19,12 +21,25 @@ const refreshTokenRepositroy = AppDataSource.getRepository(RefreshToken);
 //class instance
 const userService = new UserService(userRepository);
 const tokenService = new TokenService(refreshTokenRepositroy);
-const authcontroller = new AuthController(userService, logger, tokenService);
+const credentialService = new CredentialService();
+const authcontroller = new AuthController(
+    userService,
+    logger,
+    tokenService,
+    credentialService,
+);
 
 UserRouter.post(
     '/register',
     registerValidator,
     (req: Request, res: Response, next: NextFunction) =>
         authcontroller.register(req, res, next),
+);
+
+UserRouter.post(
+    '/login',
+    loginValidator,
+    (req: Request, res: Response, next: NextFunction) =>
+        authcontroller.login(req, res, next),
 );
 export default UserRouter;

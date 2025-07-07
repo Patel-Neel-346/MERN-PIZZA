@@ -329,7 +329,7 @@ describe('POST /auth/register', () => {
                 relations: ['user'],
             });
 
-            console.log(token);
+            // console.log(token);
             expect(token).toHaveLength(1);
         });
     });
