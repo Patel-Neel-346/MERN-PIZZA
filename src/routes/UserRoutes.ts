@@ -5,13 +5,21 @@ import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
 import logger from '../config/logger';
 import registerValidator from '../validators/register-validator';
+import { TokenService } from '../services/TokenService';
+import { RefreshToken } from '../entity/RefreshToken';
 // import { body } from 'express-validator';
 
+//router
 const UserRouter = express.Router();
 
+//repository instance to pass in controller
 const userRepository = AppDataSource.getRepository(User);
+const refreshTokenRepositroy = AppDataSource.getRepository(RefreshToken);
+
+//class instance
 const userService = new UserService(userRepository);
-const authcontroller = new AuthController(userService, logger);
+const tokenService = new TokenService(refreshTokenRepositroy);
+const authcontroller = new AuthController(userService, logger, tokenService);
 
 UserRouter.post(
     '/register',

@@ -8,11 +8,13 @@ import { JwtPayload, sign } from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 import { serverConfig } from '../config';
+import { TokenService } from '../services/TokenService';
+import { RefreshToken } from '../entity/RefreshToken';
 export class AuthController {
-    public userService;
     constructor(
-        userService: UserService,
-        public logger: Logger,
+        private readonly userService: UserService,
+        private readonly logger: Logger,
+        private readonly tokenService: TokenService,
     ) {
         this.userService = userService;
     }
@@ -46,36 +48,70 @@ export class AuthController {
                 role,
             });
 
+            // const payload: JwtPayload = {
+            //     sub: String(user.id),
+            //     role: user.role,
+            // };
+            // const privateKey = fs.readFileSync(
+            //     path.join(__dirname, '../../certs/private.pem'),
+            // );
+
+            // const PrivateKey = privateKey
+            //     .toString()
+            //     .replace('-----BEGIN RSA PRIVATE KEY-----', '')
+            //     .replace('-----END RSA PRIVATE KEY-----', '')
+            //     .replace(/\r?\n|\r/g, '')
+            //     .trim();
+
+            // const accessToken = sign(payload, PrivateKey, {
+            //     algorithm: 'HS256',
+            //     expiresIn: '1h', // 1 hour
+            //     issuer: 'auth-service',
+            // });
+            // const refreshToken = sign(
+            //     payload,
+            //     serverConfig.REFRESH_TOKEN_SECRET!,
+            //     {
+            //         algorithm: 'HS256',
+            //         expiresIn: '7d', // 1 hour
+            //         issuer: 'auth-service',
+            //     },
+            // );
+
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
             };
-            const privateKey = fs.readFileSync(
-                path.join(__dirname, '../../certs/private.pem'),
-            );
+            //generate accessToken
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
-            const PrivateKey = privateKey
-                .toString()
-                .replace('-----BEGIN RSA PRIVATE KEY-----', '')
-                .replace('-----END RSA PRIVATE KEY-----', '')
-                .replace(/\r?\n|\r/g, '')
-                .trim();
+            const newRefreshToken: RefreshToken =
+                await this.tokenService.persistRefreshToken(user);
+            //generate refreshToken
 
-            const accessToken = sign(payload, PrivateKey, {
-                algorithm: 'HS256',
-                expiresIn: '1h', // 1 hour
-                issuer: 'auth-service',
+            // if (!newRefreshToken) {
+            //     const error = createHttpError(
+            //         500,
+            //         'Faild to Create New RefreshToken Data in Database',
+            //     );
+            //     next(error);
+            //     return;
+            // }
+            const id = newRefreshToken.id;
+            const refreshToken = this.tokenService.generateRefreshToken({
+                ...payload,
+                id,
             });
-            const refreshToken = sign(
-                payload,
-                serverConfig.REFRESH_TOKEN_SECRET!,
-                {
-                    algorithm: 'HS256',
-                    expiresIn: '1h', // 1 hour
-                    issuer: 'auth-service',
-                },
-            );
 
+            console.log('AcccessToken:', accessToken);
+            console.log('RefrehToken', refreshToken);
+            console.log('Persistant Token:', newRefreshToken);
+
+            //generate presist refresh token
+            // this.tokenService.persistRefreshToken({ ...user , id:refreshToken.id})
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
