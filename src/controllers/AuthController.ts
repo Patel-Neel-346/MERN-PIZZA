@@ -7,6 +7,7 @@ import { validationResult } from 'express-validator';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { serverConfig } from '../config';
 export class AuthController {
     public userService;
     constructor(
@@ -65,11 +66,15 @@ export class AuthController {
                 expiresIn: '1h', // 1 hour
                 issuer: 'auth-service',
             });
-            const refreshToken = sign(payload, PrivateKey, {
-                algorithm: 'HS256',
-                expiresIn: '1h', // 1 hour
-                issuer: 'auth-service',
-            });
+            const refreshToken = sign(
+                payload,
+                serverConfig.REFRESH_TOKEN_SECRET!,
+                {
+                    algorithm: 'HS256',
+                    expiresIn: '1h', // 1 hour
+                    issuer: 'auth-service',
+                },
+            );
 
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',

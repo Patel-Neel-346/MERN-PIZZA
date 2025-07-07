@@ -6,8 +6,16 @@ config({
     path: path.join(__dirname, `../../.env.dev`),
 });
 
-const { PORT, NODEENV, DB_HOST, DB_PORT, DB_PASSWORD, DB_NAME, DB_USERNAME } =
-    process.env;
+const {
+    PORT,
+    NODEENV,
+    DB_HOST,
+    DB_PORT,
+    DB_PASSWORD,
+    DB_NAME,
+    DB_USERNAME,
+    REFRESH_TOKEN_SECRET,
+} = process.env;
 
 export const serverConfig = {
     PORT,
@@ -17,4 +25,5 @@ export const serverConfig = {
     DB_PASSWORD,
     DB_NAME,
     DB_USERNAME,
+    REFRESH_TOKEN_SECRET,
 };
