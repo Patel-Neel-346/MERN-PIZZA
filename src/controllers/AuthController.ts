@@ -219,8 +219,10 @@ export class AuthController {
         }
     }
 
-    self(req: AuthRequest, res: Response, next: NextFunction) {
+    async self(req: AuthRequest, res: Response, next: NextFunction) {
         console.log(req.auth);
-        res.json(req.auth);
+
+        const user = await this.userService.findByid(req.auth.sub);
+        res.json(user);
     }
 }

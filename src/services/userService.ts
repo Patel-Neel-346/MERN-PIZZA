@@ -58,4 +58,12 @@ export class UserService {
             ],
         });
     }
+
+    async findByid(id: number) {
+        return await this.userRepository.findOne({
+            where: {
+                id,
+            },
+        });
+    }
 }

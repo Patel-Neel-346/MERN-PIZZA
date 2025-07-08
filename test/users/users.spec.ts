@@ -73,9 +73,7 @@ describe('POST /auth/login', () => {
 
             console.log(reponse.body);
 
-            expect(Number((reponse.body as Record<string, string>).sub)).toBe(
-                data.id,
-            );
+            expect((reponse.body as Record<string, string>).id).toBe(data.id);
         });
     });
     //sad path
