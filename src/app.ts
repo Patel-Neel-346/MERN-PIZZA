@@ -5,10 +5,14 @@ import logger from './config/logger';
 import UserRouter from './routes/UserRoutes';
 import cookieParser from 'cookie-parser';
 import { GlobalErrorHandler } from './middleware/GlobalErrorHandler';
+import path from 'path';
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+const publicDirPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDirPath));
+
 app.get('/', (_req: express.Request, res: express.Response) => {
     res.send('Hello World Neel Patel! HI Neel Patel');
 });

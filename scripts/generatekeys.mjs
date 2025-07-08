@@ -6,7 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const certsDir = path.join(__dirname, 'certs');
+const rootDir = path.resolve(__dirname, '../');
+const certsDir = path.join(rootDir, 'certs2');
+
 if (!fs.existsSync(certsDir)) {
     fs.mkdirSync(certsDir);
 }

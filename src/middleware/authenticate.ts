@@ -6,7 +6,11 @@ import { Request } from 'express';
 
 export default expressjwt({
     secret: expressJwtSecret({
-        jwksUri: serverConfig.JWKS_URL!,
+        // jwksUri: serverConfig.JWKS_URL!,
+
+        jwksUri:
+            serverConfig.JWKS_URL! ||
+            'http://localhost:5501/well-known/jwks.json',
         cache: true,
         rateLimit: true,
     }),
