@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterUserRequest } from '../types';
+import { AuthRequest, RegisterUserRequest } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
 import createHttpError from 'http-errors';
@@ -212,6 +212,15 @@ export class AuthController {
                 id: user.id,
                 message: 'Success login ',
             });
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+            next(error);
+            return;
+        }
+    }
+
+    self(req: AuthRequest, res: Response, next: NextFunction) {
+        console.log(req.auth);
+        res.json(req.auth);
     }
 }

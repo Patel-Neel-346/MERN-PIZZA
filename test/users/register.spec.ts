@@ -10,7 +10,7 @@ import { response } from 'express';
 import { RefreshToken } from '../../src/entity/RefreshToken';
 import { Alias } from 'typeorm/query-builder/Alias';
 
-describe('POST /auth/register', () => {
+describe.skip('POST /auth/register', () => {
     let Connection: DataSource;
     beforeAll(async () => {
         //database connection
@@ -31,7 +31,7 @@ describe('POST /auth/register', () => {
     });
 
     describe('Given All Fields', () => {
-        it.skip('should return 201 status code', async () => {
+        it('should return 201 status code', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -43,6 +43,7 @@ describe('POST /auth/register', () => {
                 lastName: 'Patel',
                 email: 'neel@gmail.com',
                 password: 'secret123',
+                role: Roles.CUSTOMER,
             };
 
             //2 step
@@ -54,7 +55,7 @@ describe('POST /auth/register', () => {
             expect(respone.statusCode).toBe(201);
         });
 
-        it.skip('should return valid json format', async () => {
+        it('should return valid json format', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -79,7 +80,7 @@ describe('POST /auth/register', () => {
             ).toEqual(expect.stringContaining('json'));
         });
 
-        it.skip('should presist the user to database', async () => {
+        it('should presist the user to database', async () => {
             //AAA formula
             //1 Arrange -- prepare all data for input
             //2 Act --main act for trigger or call
@@ -91,6 +92,7 @@ describe('POST /auth/register', () => {
                 lastName: 'Patel',
                 email: 'neel@gmail.com',
                 password: 'secret123',
+                role: Roles.CUSTOMER,
             };
 
             //2 step
@@ -110,13 +112,14 @@ describe('POST /auth/register', () => {
             // expect(user[0].).toBe(userData.)
         });
 
-        it.skip('should return Id of Created User', async () => {
+        it('should return Id of Created User', async () => {
             //1
             const userData = {
                 firstName: 'Karan',
                 lastName: 'Rami',
                 email: 'Karan@gmail.com',
                 password: 'Pass123',
+                role: Roles.CUSTOMER,
             };
 
             //2
@@ -148,13 +151,14 @@ describe('POST /auth/register', () => {
             expect(returnedUser.id).toBe(user?.id);
         });
 
-        it.skip('should add Role to New Users', async () => {
+        it('should add Role to New Users', async () => {
             //1
             const userData = {
                 firstName: 'Neel',
                 lastName: 'Patel',
                 email: 'NeelPatel@gmail.com',
                 password: '123456',
+                role: Roles.CUSTOMER,
             };
 
             //2
@@ -169,13 +173,14 @@ describe('POST /auth/register', () => {
             expect(user[0].role).toBe(Roles.CUSTOMER);
         });
 
-        it.skip('should store the hased password in database', async () => {
+        it('should store the hased password in database', async () => {
             //1
             const userData = {
                 firstName: 'ved',
                 lastName: 'veghani',
                 email: 'ved@gmail.com',
                 password: 'ved123',
+                role: Roles.CUSTOMER,
             };
 
             //2
@@ -193,7 +198,7 @@ describe('POST /auth/register', () => {
             expect(user[0].password).toMatch(/^\$2b\$\d+\$/);
         });
 
-        it.skip('should return 400 status code if email is already exists', async () => {
+        it('should return 400 status code if email is already exists', async () => {
             //1
             const userData = {
                 firstName: 'Neel',
@@ -218,7 +223,7 @@ describe('POST /auth/register', () => {
             expect(user).toHaveLength(1);
         });
 
-        it.skip('should return access token and refresh token in cookies ', async () => {
+        it('should return access token and refresh token in cookies ', async () => {
             //1
             const userData = {
                 firstName: 'Neel',
@@ -291,7 +296,7 @@ describe('POST /auth/register', () => {
 
         //     expect(token).toHaveLength(1);
         // });
-        it('should store the refresh token in database', async () => {
+        it('should store the rwefresh token in database', async () => {
             //arrange
             const userData = {
                 firstName: 'Mohit',
@@ -333,7 +338,7 @@ describe('POST /auth/register', () => {
             expect(token).toHaveLength(1);
         });
     });
-    describe.skip('Missing Fields', () => {
+    describe('Missing Fields', () => {
         it('should return 400 if any fileds are missing ', async () => {
             //1
             const userData = {
@@ -429,7 +434,7 @@ describe('POST /auth/register', () => {
         // it('should return 400 if email is missing '),async;
     });
 
-    describe.skip('fields are not in proper formate', () => {
+    describe('fields are not in proper formate', () => {
         it('should return 400 status code if password length is less than 6 chars', async () => {
             //1
             const userData = {

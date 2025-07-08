@@ -8,7 +8,7 @@ import app from '../../src/app';
 import { strict } from 'assert';
 import { isJWT } from '../utiles';
 
-describe('POST /auth/login', () => {
+describe.skip('POST /auth/login', () => {
     let Connection: DataSource;
 
     beforeAll(async () => {

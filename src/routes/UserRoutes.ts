@@ -9,6 +9,8 @@ import { TokenService } from '../services/TokenService';
 import { RefreshToken } from '../entity/RefreshToken';
 import loginValidator from '../validators/login-validator';
 import { CredentialService } from '../services/CredentialService';
+import authenticate from '../middleware/authenticate';
+import { AuthRequest } from '../types';
 // import { body } from 'express-validator';
 
 //router
@@ -41,5 +43,12 @@ UserRouter.post(
     loginValidator,
     (req: Request, res: Response, next: NextFunction) =>
         authcontroller.login(req, res, next),
+);
+
+UserRouter.get(
+    '/self',
+    authenticate,
+    (req: Request, res: Response, next: NextFunction) =>
+        authcontroller.self(req as AuthRequest, res, next),
 );
 export default UserRouter;
