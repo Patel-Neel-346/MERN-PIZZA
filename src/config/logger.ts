@@ -6,10 +6,10 @@ const logger = winston.createLogger({
     defaultMeta: {
         serviceName: 'auth-service',
     },
-    format:winston.format.combine(
+    format: winston.format.combine(
         winston.format.json(),
         winston.format.timestamp(),
-        winston.format.prettyPrint()
+        winston.format.prettyPrint(),
     ),
     transports: [
         new winston.transports.Console({
