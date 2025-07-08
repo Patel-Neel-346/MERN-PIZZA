@@ -64,6 +64,7 @@ export class UserService {
             where: {
                 id,
             },
+            select: ['id', 'firstName', 'lastName', 'role', 'email'],
         });
     }
 }

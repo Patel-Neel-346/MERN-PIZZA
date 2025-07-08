@@ -223,6 +223,7 @@ export class AuthController {
         console.log(req.auth);
 
         const user = await this.userService.findByid(req.auth.sub);
+        console.log('User come from DB:', user);
         res.json(user);
     }
 }
