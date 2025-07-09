@@ -24,7 +24,7 @@ export class TokenService {
         try {
             privateKey = serverConfig.PRIVATE_KEY;
             const accessToken = sign(payload, privateKey, {
-                algorithm: 'HS256',
+                algorithm: 'RS256',
                 expiresIn: '1h',
                 issuer: 'auth-server',
             });

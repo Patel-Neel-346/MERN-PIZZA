@@ -11,6 +11,7 @@ import loginValidator from '../validators/login-validator';
 import { CredentialService } from '../services/CredentialService';
 import authenticate from '../middleware/authenticate';
 import { AuthRequest } from '../types';
+import validateRefreshToken from '../middleware/validateRefreshToken';
 // import { body } from 'express-validator';
 
 //router
@@ -50,5 +51,12 @@ UserRouter.get(
     authenticate,
     (req: Request, res: Response, next: NextFunction) =>
         authcontroller.self(req as AuthRequest, res, next),
+);
+
+UserRouter.post(
+    '/refresh',
+    validateRefreshToken,
+    (req: Request, res: Response, next: NextFunction) =>
+        authcontroller.refresh(req as AuthRequest, res, next),
 );
 export default UserRouter;

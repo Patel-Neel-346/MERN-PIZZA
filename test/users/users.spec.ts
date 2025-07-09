@@ -19,7 +19,7 @@ describe('POST /auth/login', () => {
     });
 
     beforeEach(async () => {
-        await jwks.start();
+        jwks.start();
         await connection.dropDatabase();
         await connection.synchronize();
     });
