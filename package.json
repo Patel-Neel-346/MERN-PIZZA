@@ -6,6 +6,7 @@
    "scripts": {
       "dev": "cross-env NODEENV=dev nodemon src/server.ts",
       "lint": "eslint src",
+      "build":"tsc",
       "lint:fix": "eslint src --fix",
       "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
       "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",

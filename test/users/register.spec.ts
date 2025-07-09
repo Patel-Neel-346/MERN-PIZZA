@@ -430,8 +430,6 @@ describe.skip('POST /auth/register', () => {
 
             expect(respone.statusCode).toBe(400);
         });
-
-        // it('should return 400 if email is missing '),async;
     });
 
     describe('fields are not in proper formate', () => {
