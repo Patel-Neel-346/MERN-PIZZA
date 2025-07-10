@@ -14,9 +14,9 @@
       "test": "cross-env NODEENV=dev jest --watch --runInBand",
       "start": "ts-node src/index.ts",
       "migration:generate": "typeorm-ts-node-commonjs migration:generate",
-      "miggration:run": "typeorm-ts-node-commonjs migration:run",
-      "miggration:create": "typeorm-ts-node-commonjs migration:create",
-      "miggration:revert": "typeorm-ts-node-commonjs migration:revert"
+      "migration:run": "typeorm-ts-node-commonjs migration:run",
+      "migration:create": "typeorm-ts-node-commonjs migration:create",
+      "migration:revert": "typeorm-ts-node-commonjs migration:revert"
    },
    "author": "Neel Patel <neelpatel6340@gmail.com>",
    "license": "ISC",
