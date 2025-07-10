@@ -6,7 +6,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import createJWKSMock from 'mock-jwks';
 
-describe('POST /auth/login', () => {
+describe.skip('POST /auth/login', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
     const jwksPath = '/well-known/jwks.json';

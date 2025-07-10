@@ -4,6 +4,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import { response } from 'express';
 import { Tenant } from '../../src/entity/Tenants';
+import { ITenantData } from '../../src/types';
 
 describe('POST /tenants', () => {
     let connection: DataSource;
@@ -42,7 +43,8 @@ describe('POST /tenants', () => {
 
             //assert
 
-            expect(response.statusCode).toBe(201);
+            // console.log(Response.statusCode);
+            expect(Response.statusCode).toBe(201);
         });
 
         it('should create tenant in database', async () => {
