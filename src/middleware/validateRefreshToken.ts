@@ -17,6 +17,7 @@ export default expressjwt({
     },
     async isRevoked(req: Request, token) {
         try {
+            console.log(token);
             const refreshTokenRepository =
                 AppDataSource.getRepository(RefreshToken);
 
@@ -32,7 +33,7 @@ export default expressjwt({
             return refreshToken === null;
         } catch (error) {
             logger.error('error while getting the refresh token', {
-                id: (token?.payload as IRefreshTokenPayload).id,
+                id: Number((token?.payload as IRefreshTokenPayload).id),
             });
         }
         return true;

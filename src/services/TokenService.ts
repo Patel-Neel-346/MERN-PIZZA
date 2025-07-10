@@ -10,20 +10,20 @@ export class TokenService {
         private readonly refreshTokenRepository: Repository<RefreshToken>,
     ) {}
 
-    generateAccessToken(payload: JwtPayload) {
-        let privateKey;
+    generateAccessToken(payload: JwtPayload, PrivateKey: NonSharedBuffer) {
+        // let privateKey;
 
-        if (!serverConfig.PRIVATE_KEY) {
-            const error = createHttpError(
-                500,
-                'error while reading private key',
-            );
-            throw error;
-        }
+        // if (!serverConfig.PRIVATE_KEY) {
+        //     const error = createHttpError(
+        //         500,
+        //         'error while reading private key',
+        //     );
+        //     throw error;
+        // }
 
         try {
-            privateKey = serverConfig.PRIVATE_KEY;
-            const accessToken = sign(payload, privateKey, {
+            // privateKey = serverConfig.PRIVATE_KEY;
+            const accessToken = sign(payload, PrivateKey, {
                 algorithm: 'RS256',
                 expiresIn: '1h',
                 issuer: 'auth-server',

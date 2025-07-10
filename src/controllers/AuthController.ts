@@ -20,6 +20,14 @@ export class AuthController {
     ) {
         this.userService = userService;
     }
+
+    readPrivateKey() {
+        const privateKey = fs.readFileSync(
+            path.join(__dirname, '../../certs/private.pem'),
+        );
+
+        return privateKey;
+    }
     async register(
         req: RegisterUserRequest,
         res: Response,
@@ -88,7 +96,22 @@ export class AuthController {
                 email: user.email,
             };
             //generate accessToken
-            const accessToken = this.tokenService.generateAccessToken(payload);
+
+            const privateKey = this.readPrivateKey();
+
+            if (!privateKey) {
+                const error = createHttpError(
+                    500,
+                    'faild to read private key from certs floder',
+                );
+
+                next(error);
+                return;
+            }
+            const accessToken = this.tokenService.generateAccessToken(
+                payload,
+                privateKey,
+            );
 
             const newRefreshToken: RefreshToken =
                 await this.tokenService.persistRefreshToken(user);
@@ -184,7 +207,21 @@ export class AuthController {
                 email: user.email,
             };
 
-            const accessToken = this.tokenService.generateAccessToken(payload);
+            const privateKey = this.readPrivateKey();
+
+            if (!privateKey) {
+                const error = createHttpError(
+                    500,
+                    'faild to read private key from certs floder',
+                );
+
+                next(error);
+                return;
+            }
+            const accessToken = this.tokenService.generateAccessToken(
+                payload,
+                privateKey,
+            );
 
             const newRefreshToken =
                 await this.tokenService.persistRefreshToken(user);
@@ -250,7 +287,21 @@ export class AuthController {
 
             //create token for user to send
 
-            const accessToken = this.tokenService.generateAccessToken(payload);
+            const privateKey = this.readPrivateKey();
+
+            if (!privateKey) {
+                const error = createHttpError(
+                    500,
+                    'faild to read private key from certs floder',
+                );
+
+                next(error);
+                return;
+            }
+            const accessToken = this.tokenService.generateAccessToken(
+                payload,
+                privateKey,
+            );
 
             const newRefreshToken =
                 await this.tokenService.persistRefreshToken(user);
@@ -274,7 +325,13 @@ export class AuthController {
                 httpOnly: true,
             });
 
-            res.status(200).json();
+            res.status(200).json({
+                success: 'True',
+                message:
+                    'Your Access &  refresh token has been Updated SuccessFuly 😁',
+                accessToken,
+                refreshToken,
+            });
         } catch (error) {
             next(error);
         }
