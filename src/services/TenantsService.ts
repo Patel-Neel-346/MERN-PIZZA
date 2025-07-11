@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { Tenant } from '../entity/Tenants';
-import { ITenantData } from '../types';
+import { ITenantData, PaginationParams } from '../types';
 import createHttpError from 'http-errors';
+import { NextFunction } from 'express';
 
 export class TenantService {
     constructor(private readonly tenanteRepository: Repository<Tenant>) {}
@@ -47,5 +48,37 @@ export class TenantService {
             const err = createHttpError(500, 'failed to delete tenant from Db');
             throw err;
         }
+    }
+
+    async getAll(
+        validateQueryData: PaginationParams,
+    ): Promise<[Tenant[], number]> {
+        const queryBuilder =
+            this.tenanteRepository.createQueryBuilder('tenant');
+
+        if (validateQueryData.q) {
+            const searchTerm = `%${validateQueryData.q}%`;
+
+            queryBuilder.where(
+                new Brackets((qb) => {
+                    qb.where(
+                        "CONCAT(tenant.name,' ',tenant.address) ILIKE :q",
+                        {
+                            q: searchTerm,
+                        },
+                    );
+                }),
+            );
+        }
+
+        const result = await queryBuilder
+            .skip(
+                (validateQueryData.currentPage - 1) * validateQueryData.perPage,
+            )
+            .take(validateQueryData.perPage)
+            .orderBy('tenant.id', 'DESC')
+            .getManyAndCount();
+
+        return result;
     }
 }

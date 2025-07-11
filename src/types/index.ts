@@ -6,6 +6,8 @@ export interface UserData {
     email: string;
     password: string;
     role: string;
+    id?: number;
+    tenantId?: number;
 }
 
 export interface RegisterUserRequest extends Request {
@@ -34,4 +36,11 @@ export interface ITenantData {
 
 export interface RegisterTenantsrequest extends Request {
     body: ITenantData;
+}
+
+export interface PaginationParams {
+    perPage: number;
+    currentPage: number;
+    q: string;
+    role: string;
 }

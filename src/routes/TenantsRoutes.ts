@@ -9,6 +9,7 @@ import TenantsValidator from '../validators/Tenants-validator';
 import authenticate from '../middleware/authenticate';
 import { CanAccess } from '../middleware/CanAccess';
 import { Roles } from '../constants';
+import ListUserValidatior from '../validators/List-User-Validatior';
 
 const router = express.Router();
 
@@ -40,8 +41,11 @@ router.patch(
 
 // get all tenants
 
-router.get('/', (req: Request, res: Response, next: NextFunction) =>
-    tenantsController.getAll(req, res, next),
+router.get(
+    '/',
+    ListUserValidatior,
+    (req: Request, res: Response, next: NextFunction) =>
+        tenantsController.getAll(req, res, next),
 );
 
 //get tenants by Id
