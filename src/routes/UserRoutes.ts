@@ -1,70 +1,69 @@
 import express, { Request, Response, NextFunction } from 'express';
+import authenticate from '../middleware/authenticate';
+import { CanAccess } from '../middleware/CanAccess';
+import { Roles } from '../constants';
+import registerValidator from '../validators/register-validator';
 import { AuthController } from '../controllers/AuthController';
-import { UserService } from '../services/userService';
 import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
+import { UserService } from '../services/userService';
+import { UserController } from '../controllers/UserController';
 import logger from '../config/logger';
-import registerValidator from '../validators/register-validator';
-import { TokenService } from '../services/TokenService';
-import { RefreshToken } from '../entity/RefreshToken';
-import loginValidator from '../validators/login-validator';
-import { CredentialService } from '../services/CredentialService';
-import authenticate from '../middleware/authenticate';
-import { AuthRequest } from '../types';
-import validateRefreshToken from '../middleware/validateRefreshToken';
-import parseRefreshToken from '../middleware/parseRefreshToken';
-// import { body } from 'express-validator';
 
-//router
 const UserRouter = express.Router();
 
-//repository instance to pass in controller
 const userRepository = AppDataSource.getRepository(User);
-const refreshTokenRepositroy = AppDataSource.getRepository(RefreshToken);
 
-//class instance
 const userService = new UserService(userRepository);
-const tokenService = new TokenService(refreshTokenRepositroy);
-const credentialService = new CredentialService();
-const authcontroller = new AuthController(
-    userService,
-    logger,
-    tokenService,
-    credentialService,
-);
 
+const usercontroller = new UserController(userService, logger);
+
+//createing user
 UserRouter.post(
-    '/register',
+    '/',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
     registerValidator,
     (req: Request, res: Response, next: NextFunction) =>
-        authcontroller.register(req, res, next),
+        usercontroller.CreateNewUser(req, res, next),
 );
 
-UserRouter.post(
-    '/login',
-    loginValidator,
+//update user data by id
+UserRouter.patch(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        authcontroller.login(req, res, next),
+        usercontroller.UpdateUser(req, res, next),
 );
+
+//get all userdata according to pagination
 
 UserRouter.get(
-    '/self',
+    '/',
     authenticate,
+    CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        authcontroller.self(req as AuthRequest, res, next),
+        usercontroller.getAllData(req, res, next),
 );
 
-UserRouter.post(
-    '/refresh',
-    validateRefreshToken,
+//get one userData By ID
+
+UserRouter.get(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        authcontroller.refresh(req as AuthRequest, res, next),
+        usercontroller.getUserDataById(req, res, next),
 );
 
-UserRouter.post(
-    '/logout',
-    parseRefreshToken,
+//delete user from db
+UserRouter.delete(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        authcontroller.logout(req as AuthRequest, res, next),
+        usercontroller.DeleteUser(req, res, next),
 );
+
 export default UserRouter;

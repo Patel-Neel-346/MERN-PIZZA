@@ -2,11 +2,11 @@ import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
 import logger from './config/logger';
-import UserRouter from './routes/UserRoutes';
 import TenantsRouter from './routes/TenantsRoutes';
 import cookieParser from 'cookie-parser';
 import { GlobalErrorHandler } from './middleware/GlobalErrorHandler';
 import path from 'path';
+import AuthRouter from './routes/AuthRoutes';
 const app = express();
 
 app.use(express.json());
@@ -18,7 +18,7 @@ app.get('/', (_req: express.Request, res: express.Response) => {
     res.send('Hello World Neel Patel! HI Neel Patel');
 });
 //routes
-app.use('/auth', UserRouter);
+app.use('/auth', AuthRouter);
 app.use('/tenants', TenantsRouter);
 //global error handler and alwayes last in all routes
 //added ERROR Handler
