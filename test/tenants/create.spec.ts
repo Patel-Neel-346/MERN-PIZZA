@@ -121,7 +121,33 @@ describe('POST /tenants', () => {
             // );
         });
 
-        it('should return 403 if user is not admin', async () => {});
+        it('should return 403 if user is not admin', async () => {
+            const token = jwks.token({
+                sub: '1',
+                role: Roles.MANAGER,
+            });
+            const tenantData = {
+                name: 'Tenant Name',
+                address: 'Tenant Address',
+            };
+
+            //act
+
+            const Response = await request(app)
+                .post('/tenants')
+                .set('Cookie', `accessToken=${token}`)
+                .send(tenantData);
+
+            const tenantRepository = connection.getRepository(Tenant);
+            const tenants = await tenantRepository.find();
+
+            console.log(tenants);
+            expect(Response.statusCode).toBe(403);
+            expect(tenants).toHaveLength(0);
+            // expect((Response.body as Record<string, string>).name).toBe(
+            //     tenantData.name,
+            // );
+        });
     });
 
     //sad path
