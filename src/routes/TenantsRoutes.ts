@@ -18,6 +18,7 @@ const tenantService = new TenantService(tenantRepository);
 
 const tenantsController = new TenantsController(tenantService, logger);
 
+//Create Tenants
 router.post(
     '/',
     authenticate,
@@ -25,6 +26,42 @@ router.post(
     TenantsValidator,
     (req: RegisterTenantsrequest, res: Response, next: NextFunction) =>
         tenantsController.create(req, res, next),
+);
+
+// update Tenants by Id
+router.patch(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
+    TenantsValidator,
+    (req: RegisterTenantsrequest, res: Response, next: NextFunction) =>
+        tenantsController.update(req, res, next),
+);
+
+// get all tenants
+
+router.get('/', (req: Request, res: Response, next: NextFunction) =>
+    tenantsController.getAll(req, res, next),
+);
+
+//get tenants by Id
+
+router.get(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
+    (req: Request, res: Response, next: NextFunction) =>
+        TenantsController.getOne(req, res, next),
+);
+
+//delete tenants
+
+router.delete(
+    '/:id',
+    authenticate,
+    CanAccess([Roles.ADMIN]),
+    (req: Request, res: Response, next: NextFunction) =>
+        TenantsController.destroy(req, res, next),
 );
 
 export default router;

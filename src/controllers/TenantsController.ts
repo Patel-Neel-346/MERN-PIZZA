@@ -4,6 +4,8 @@ import { Logger } from 'winston';
 import { RegisterTenantsrequest } from '../types';
 import { validationResult } from 'express-validator';
 import createHttpError from 'http-errors';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 // import { Logger } from 'typeorm';
 
 export class TenantsController {
@@ -40,4 +42,16 @@ export class TenantsController {
             next(error);
         }
     }
+
+    async update(
+        req: RegisterTenantsrequest,
+        res: Response,
+        next: NextFunction,
+    ) {}
+
+    async getAll(req: Request, res: Response, next: NextFunction) {}
+
+    static async getOne(req: Request, res: Response, next: NextFunction) {}
+
+    static async destroy(req: Request, res: Response, next: NextFunction) {}
 }

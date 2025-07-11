@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthRequest } from '../types';
 import createHttpError from 'http-errors';
 
-//@typescript-eslint/restrict-template-expressions:off
 export const CanAccess = (roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         // const role = req.auth;
