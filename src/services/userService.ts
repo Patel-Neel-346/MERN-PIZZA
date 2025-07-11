@@ -86,4 +86,8 @@ export class UserService {
             throw err;            
         }
     }
+
+    async deleteById(userId:number){
+        return await this.userRepository.delete(userId)
+    }
 }

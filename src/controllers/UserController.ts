@@ -85,5 +85,27 @@ export class UserController {
 
     async getUserDataById(req: Request, res: Response, next: NextFunction) {}
 
-    async DeleteUser(req: Request, res: Response, next: NextFunction) {}
+    async DeleteUser(req: Request, res: Response, next: NextFunction) {
+
+        const userId = req.params.id;
+
+        if(isNaN(Number(userId))){
+            next(createHttpError(400,'Invalid url Params'))
+            return;
+        }
+
+        try {
+            await this.userservice.deleteById(Number(userId))
+
+            this.logger.info('User has been deleted!',{
+                id:Number(userId)
+            })
+
+            res.json({
+                id:Number(userId)
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
