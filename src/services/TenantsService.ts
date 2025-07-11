@@ -16,4 +16,13 @@ export class TenantService {
             throw err;
         }
     }
+
+    async update(id: number, tenantData: ITenantData) {
+        try {
+            return await this.tenanteRepository.update(id, tenantData);
+        } catch (error) {
+            const err = createHttpError(500, 'Falid to store data in db');
+            throw err;
+        }
+    }
 }

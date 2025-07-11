@@ -47,7 +47,43 @@ export class TenantsController {
         req: RegisterTenantsrequest,
         res: Response,
         next: NextFunction,
-    ) {}
+    ) {
+        //validation
+        const result = validationResult(req);
+
+        if (!result.isEmpty()) {
+            const error = createHttpError(400, 'Invalid request');
+            next(error);
+        }
+
+        const { name, address } = req.body;
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, 'Invalid Url Params'));
+            return;
+        }
+
+        this.logger.debug('request for updateing a tenant', req.body);
+
+        try {
+            await this.tenantService.update(Number(tenantId), {
+                name,
+                address,
+            });
+
+            this.logger.info('Tenant has been Updated', {
+                id: tenantId,
+            });
+
+            res.status(200).json({
+                id: Number(tenantId),
+                message: 'Tenants Has been Updated SuccesFully',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async getAll(req: Request, res: Response, next: NextFunction) {}
 
