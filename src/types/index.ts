@@ -44,3 +44,7 @@ export interface PaginationParams {
     q: string;
     role: string;
 }
+
+export interface CreateUserRequest extends Request {
+    body: UserData;
+}
