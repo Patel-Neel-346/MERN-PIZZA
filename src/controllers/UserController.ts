@@ -1,7 +1,9 @@
 import { Logger } from 'winston';
 import { UserService } from '../services/userService';
 import { Request, Response, NextFunction } from 'express';
-import { CreateUserRequest } from '../types';
+import { CreateUserRequest, UpdatedUserRequest } from '../types';
+import { validationResult } from 'express-validator';
+import createHttpError from 'http-errors';
 
 export class UserController {
     constructor(
@@ -37,7 +39,47 @@ export class UserController {
         }
     }
 
-    async UpdateUser(req: Request, res: Response, next: NextFunction) {}
+    async UpdateUser(req: UpdatedUserRequest, res: Response, next: NextFunction) {
+        const result = validationResult(req)
+
+        if(!result.isEmpty()){
+            const error = createHttpError(400,'Invalid Req')
+            next(error)
+        }
+
+        const {firstName,lastName,role,tenantId} = req.body;
+        const userId = req.params.id;
+
+
+        if(isNaN(Number(userId))){
+            next(createHttpError(400,'Invalid url params'))
+            return;
+
+        }
+
+        this.logger.debug("Request for updating a user",req.body)
+
+
+        try {
+            await this.userservice.update(Number(userId),{
+                firstName,
+                lastName,
+                role,
+                tenantId
+            })
+
+            this.logger.info('User has been updatecd',{
+                id:Number(userId)
+            })
+
+            res.json({
+                id:Number(userId)
+            })
+        } catch (error) {
+            next(error)
+            
+        }
+    }
 
     async getAllData(req: Request, res: Response, next: NextFunction) {}
 
