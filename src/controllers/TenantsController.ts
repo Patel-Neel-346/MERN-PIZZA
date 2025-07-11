@@ -87,7 +87,48 @@ export class TenantsController {
 
     async getAll(req: Request, res: Response, next: NextFunction) {}
 
-    static async getOne(req: Request, res: Response, next: NextFunction) {}
+    async getTenantsDataById(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id;
 
-    static async destroy(req: Request, res: Response, next: NextFunction) {}
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, 'Invalid url Params'));
+            return;
+        }
+
+        try {
+            const tenant = await this.tenantService.getOne(Number(tenantId));
+
+            if (!tenant) {
+                next(createHttpError(400, 'Tenants does not exits'));
+                return;
+            }
+
+            this.logger.info('Tenants has been fetched!');
+            res.json(tenant);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async destroy(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, 'Invalid url Params'));
+            return;
+        }
+        try {
+            await this.tenantService.deleteById(Number(tenantId));
+
+            this.logger.info('Tenants has been deleted from db', {
+                id: Number(tenantId),
+            });
+
+            res.json({
+                id: Number(tenantId),
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

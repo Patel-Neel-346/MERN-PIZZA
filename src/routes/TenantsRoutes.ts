@@ -51,7 +51,7 @@ router.get(
     authenticate,
     CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        TenantsController.getOne(req, res, next),
+        tenantsController.getTenantsDataById(req, res, next),
 );
 
 //delete tenants
@@ -61,7 +61,7 @@ router.delete(
     authenticate,
     CanAccess([Roles.ADMIN]),
     (req: Request, res: Response, next: NextFunction) =>
-        TenantsController.destroy(req, res, next),
+        tenantsController.destroy(req, res, next),
 );
 
 export default router;

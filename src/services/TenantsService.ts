@@ -25,4 +25,27 @@ export class TenantService {
             throw err;
         }
     }
+
+    async getOne(tenantId: number) {
+        try {
+            return await this.tenanteRepository.findOne({
+                where: { id: tenantId },
+            });
+        } catch (error) {
+            const err = createHttpError(
+                500,
+                'failed to get tenants data from DB',
+            );
+            throw err;
+        }
+    }
+
+    async deleteById(tenantId: number) {
+        try {
+            return await this.tenanteRepository.delete(tenantId);
+        } catch (error) {
+            const err = createHttpError(500, 'failed to delete tenant from Db');
+            throw err;
+        }
+    }
 }
