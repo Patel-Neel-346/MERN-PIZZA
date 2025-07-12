@@ -9,6 +9,8 @@ import { User } from '../entity/User';
 import { UserService } from '../services/userService';
 import { UserController } from '../controllers/UserController';
 import logger from '../config/logger';
+import UpdateUserValidator from '../validators/Update-user-validator';
+import ListUserValidatior from '../validators/List-User-Validatior';
 
 const UserRouter = express.Router();
 
@@ -32,7 +34,9 @@ UserRouter.post(
 UserRouter.patch(
     '/:id',
     authenticate,
+
     CanAccess([Roles.ADMIN]),
+    UpdateUserValidator,
     (req: Request, res: Response, next: NextFunction) =>
         usercontroller.UpdateUser(req, res, next),
 );
@@ -43,6 +47,7 @@ UserRouter.get(
     '/',
     authenticate,
     CanAccess([Roles.ADMIN]),
+    ListUserValidatior,
     (req: Request, res: Response, next: NextFunction) =>
         usercontroller.getAllData(req, res, next),
 );
