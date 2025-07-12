@@ -1,7 +1,7 @@
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
-import { LimitedUserData, UserData } from '../types';
+import { LimitedUserData, PaginationParams, UserData } from '../types';
 import createHttpError from 'http-errors';
 import { Roles } from '../constants';
 import bcrypt from 'bcrypt';
@@ -90,5 +90,41 @@ export class UserService {
 
     async deleteById(userId: number) {
         return await this.userRepository.delete(userId);
+    }
+
+    async getAll(validateQueryData: PaginationParams) {
+        const queryBuilder = this.userRepository.createQueryBuilder('users');
+
+        if (validateQueryData.q) {
+            const searchItem = `%${validateQueryData.q}%`;
+
+            queryBuilder.where(
+                new Brackets((qb) => {
+                    qb.where(
+                        "CONCAT(users.firstName, ' ',users.lastName) ILIKE :q",
+                        {
+                            q: searchItem,
+                        },
+                    ).orWhere('users.email ILIKE :q', { q: searchItem });
+                }),
+            );
+        }
+
+        if (validateQueryData.role) {
+            queryBuilder.andWhere('users.role = :role', {
+                role: validateQueryData.role,
+            });
+        }
+
+        const result = await queryBuilder
+            .skip(
+                (validateQueryData.currentPage - 1) * validateQueryData.perPage,
+            )
+            .take(validateQueryData.perPage)
+            .orderBy('users.id', 'DESC')
+            .leftJoinAndSelect('users.tenats', 'tenant')
+            .getManyAndCount();
+
+        return result;
     }
 }

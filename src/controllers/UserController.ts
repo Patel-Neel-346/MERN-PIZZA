@@ -1,8 +1,12 @@
 import { Logger } from 'winston';
 import { UserService } from '../services/userService';
 import { Request, Response, NextFunction } from 'express';
-import { CreateUserRequest, UpdatedUserRequest } from '../types';
-import { validationResult } from 'express-validator';
+import {
+    CreateUserRequest,
+    PaginationParams,
+    UpdatedUserRequest,
+} from '../types';
+import { matchedData, validationResult } from 'express-validator';
 import createHttpError from 'http-errors';
 
 export class UserController {
@@ -81,7 +85,28 @@ export class UserController {
         }
     }
 
-    async getAllData(req: Request, res: Response, next: NextFunction) {}
+    async getAllData(req: Request, res: Response, next: NextFunction) {
+        const validQuery = matchedData(req, {
+            onlyValidData: true,
+        });
+
+        try {
+            const [user, count] = await this.userservice.getAll(
+                validQuery as PaginationParams,
+            );
+
+            this.logger.info('all users have been Fetched');
+
+            res.json({
+                data: user,
+                currentPage: validQuery.currentPage as number,
+                perPage: validQuery.perPage as number,
+                total: count,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async getUserDataById(req: Request, res: Response, next: NextFunction) {
         const userId = req.params.id;

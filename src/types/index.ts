@@ -49,14 +49,14 @@ export interface CreateUserRequest extends Request {
     body: UserData;
 }
 
-export interface LimitedUserData{
-    firstName:string;
-    lastName:string;
-    role:string;
-    email?:string;
-    tenantId?:number;
+export interface LimitedUserData {
+    firstName: string;
+    lastName: string;
+    role: string;
+    email?: string;
+    tenantId?: number;
 }
 
-export interface UpdatedUserRequest extends Request{
-    body:LimitedUserData
+export interface UpdatedUserRequest extends Request {
+    body: LimitedUserData;
 }
