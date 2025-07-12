@@ -6,7 +6,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import createJWKSMock from 'mock-jwks';
 
-describe('POST /auth/login', () => {
+describe('POST /users/login', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
     const jwksPath = '/well-known/jwks.json';
@@ -65,3 +65,15 @@ describe('POST /auth/login', () => {
 
     describe('Fields Are Missing', () => {});
 });
+
+
+describe('POST /users/createUserOnlyManager',()=>{})
+
+describe('POST /users/update',()=>{})
+
+
+describe('POST /users/getAll',()=>{})
+
+describe('POST /users/getOnebyId',()=>{})
+
+describe('POST /users/delete',()=>{})

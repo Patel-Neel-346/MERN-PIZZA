@@ -8,7 +8,7 @@ import { ITenantData } from '../../src/types';
 import createJWKSMock, { JWKSMock } from 'mock-jwks';
 import { Roles } from '../../src/constants';
 
-describe('POST /tenants', () => {
+describe('POST /tenants/create', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
     const jwksPath = '/well-known/jwks.json';
@@ -156,3 +156,14 @@ describe('POST /tenants', () => {
         it('should return 400 if fields are missing', async () => {});
     });
 });
+
+describe('POST /tenants/update',()=>{})
+
+describe('POST /tenants/getAll',()=>{})
+
+describe('POST /tenants/getByID',()=>{})
+
+describe('POST /tenants/delete',()=>{})
+
+
+

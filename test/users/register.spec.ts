@@ -480,3 +480,8 @@ describe('POST /auth/register', () => {
         });
     });
 });
+
+describe('POST /auth/refresh',()=>{})
+
+describe('POST /auth/self',()=>{})
+
