@@ -2,7 +2,7 @@
    "name": "mern-pizza",
    "version": "1.0.0",
    "description": "The User Management service",
-   "main": "index.js",
+   "main": "server.js",
    "scripts": {
       "dev": "cross-env NODEENV=dev nodemon src/server.ts",
       "lint": "eslint src",
@@ -11,7 +11,8 @@
       "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
       "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",
       "prepare": "husky",
-      "test": "cross-env NODEENV=dev jest --watch --runInBand",
+      "test": "cross-env NODEENV=dev jest --no-cache --coverage --all --runInBand",
+      "test:watch":" cross-env NODEENV=dev jest --watch",
       "start": "ts-node src/index.ts",
       "migration:generate": "typeorm-ts-node-commonjs migration:generate",
       "migration:run": "typeorm-ts-node-commonjs migration:run",
