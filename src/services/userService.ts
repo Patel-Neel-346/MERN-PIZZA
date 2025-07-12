@@ -68,26 +68,27 @@ export class UserService {
         });
     }
 
-    async update(userId:number,{
-        firstName,
-        lastName,
-        role,
-        tenantId
-    }:LimitedUserData){
+    async update(
+        userId: number,
+        { firstName, lastName, role, tenantId }: LimitedUserData,
+    ) {
         try {
-            return await this.userRepository.update(userId,{
+            return await this.userRepository.update(userId, {
                 firstName,
                 lastName,
                 role,
-                tenats:tenantId ? { id : tenantId} : undefined
-            });           
+                tenats: tenantId ? { id: tenantId } : undefined,
+            });
         } catch (error) {
-            const err = createHttpError(500,'Failed to update the user in the database')
-            throw err;            
+            const err = createHttpError(
+                500,
+                'Failed to update the user in the database',
+            );
+            throw err;
         }
     }
 
-    async deleteById(userId:number){
-        return await this.userRepository.delete(userId)
+    async deleteById(userId: number) {
+        return await this.userRepository.delete(userId);
     }
 }

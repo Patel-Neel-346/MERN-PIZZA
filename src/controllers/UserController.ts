@@ -39,73 +39,94 @@ export class UserController {
         }
     }
 
-    async UpdateUser(req: UpdatedUserRequest, res: Response, next: NextFunction) {
-        const result = validationResult(req)
+    async UpdateUser(
+        req: UpdatedUserRequest,
+        res: Response,
+        next: NextFunction,
+    ) {
+        const result = validationResult(req);
 
-        if(!result.isEmpty()){
-            const error = createHttpError(400,'Invalid Req')
-            next(error)
+        if (!result.isEmpty()) {
+            const error = createHttpError(400, 'Invalid Req');
+            next(error);
         }
 
-        const {firstName,lastName,role,tenantId} = req.body;
+        const { firstName, lastName, role, tenantId } = req.body;
         const userId = req.params.id;
 
-
-        if(isNaN(Number(userId))){
-            next(createHttpError(400,'Invalid url params'))
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, 'Invalid url params'));
             return;
-
         }
 
-        this.logger.debug("Request for updating a user",req.body)
-
+        this.logger.debug('Request for updating a user', req.body);
 
         try {
-            await this.userservice.update(Number(userId),{
+            await this.userservice.update(Number(userId), {
                 firstName,
                 lastName,
                 role,
-                tenantId
-            })
+                tenantId,
+            });
 
-            this.logger.info('User has been updatecd',{
-                id:Number(userId)
-            })
+            this.logger.info('User has been updatecd', {
+                id: Number(userId),
+            });
 
             res.json({
-                id:Number(userId)
-            })
+                id: Number(userId),
+            });
         } catch (error) {
-            next(error)
-            
+            next(error);
         }
     }
 
     async getAllData(req: Request, res: Response, next: NextFunction) {}
 
-    async getUserDataById(req: Request, res: Response, next: NextFunction) {}
-
-    async DeleteUser(req: Request, res: Response, next: NextFunction) {
-
+    async getUserDataById(req: Request, res: Response, next: NextFunction) {
         const userId = req.params.id;
-
-        if(isNaN(Number(userId))){
-            next(createHttpError(400,'Invalid url Params'))
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, 'Invalid Url Params'));
             return;
         }
 
         try {
-            await this.userservice.deleteById(Number(userId))
+            const user = await this.userservice.findByid(Number(userId));
 
-            this.logger.info('User has been deleted!',{
-                id:Number(userId)
-            })
+            if (!user) {
+                next(createHttpError(400, 'User does not exist.'));
+                return;
+            }
+
+            this.logger.info('User has been Fetched', {
+                id: user.id,
+            });
+            res.json(user);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async DeleteUser(req: Request, res: Response, next: NextFunction) {
+        const userId = req.params.id;
+
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, 'Invalid url Params'));
+            return;
+        }
+
+        try {
+            await this.userservice.deleteById(Number(userId));
+
+            this.logger.info('User has been deleted!', {
+                id: Number(userId),
+            });
 
             res.json({
-                id:Number(userId)
-            })
+                id: Number(userId),
+            });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 }
