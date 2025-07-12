@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
     //Dont use this in Production use or do false only do in test and test for true
     synchronize: false, //only true in development && test development false in Production :xD
     logging: false,
-    entities: ['src/entity/*.ts'], //tables ,documents
-    migrations: ['src/migration/*.ts'],
+    entities: ['src/entity/*.{ts,js}'], //tables ,documents
+    migrations: ['src/migration/*.{ts,js}'],
     subscribers: [],
 });
