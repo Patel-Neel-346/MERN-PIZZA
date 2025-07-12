@@ -11,6 +11,7 @@ import { serverConfig } from '../config';
 import { TokenService } from '../services/TokenService';
 import { RefreshToken } from '../entity/RefreshToken';
 import { CredentialService } from '../services/CredentialService';
+import { Roles } from '../constants';
 export class AuthController {
     constructor(
         private readonly userService: UserService,
@@ -207,6 +208,10 @@ export class AuthController {
                 email: user.email,
             };
 
+            if(user.role === Roles.MANAGER){
+                payload.tenant = user.tenats?.id
+            }
+
             const privateKey = this.readPrivateKey();
 
             if (!privateKey) {
@@ -274,6 +279,7 @@ export class AuthController {
                 email: req.auth.email,
             };
 
+          
             const user = await this.userService.findByid(req.auth.sub);
 
             if (!user) {
@@ -283,6 +289,9 @@ export class AuthController {
                 );
                 next(error);
                 return;
+            }
+              if (user.role === Roles.MANAGER) {
+                payload.tenant = user.tenats?.id;
             }
 
             //create token for user to send
