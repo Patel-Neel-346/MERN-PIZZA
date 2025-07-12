@@ -35,7 +35,7 @@ export class TenantsController {
                 id: tenant.id,
             });
 
-            console.log(tenant);
+            // console.log(tenant);
 
             res.status(201).json(tenant);
         } catch (error) {

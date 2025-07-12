@@ -60,7 +60,7 @@ describe('POST /tenants', () => {
                 .send(tenantData);
 
             //assert
-            console.log(Response.body);
+            // console.log(Response.body);
 
             // console.log(Response.statusCode);
             expect(Response.statusCode).toBe(201);
@@ -86,7 +86,7 @@ describe('POST /tenants', () => {
             const tenantRepository = connection.getRepository(Tenant);
             const tenants = await tenantRepository.find();
 
-            console.log(tenants);
+            // console.log(tenants);
             expect(tenants).toHaveLength(1);
             expect((Response.body as Record<string, string>).name).toBe(
                 tenantData.name,
@@ -113,7 +113,7 @@ describe('POST /tenants', () => {
             const tenantRepository = connection.getRepository(Tenant);
             const tenants = await tenantRepository.find();
 
-            console.log(tenants);
+            // console.log(tenants);
             expect(tenants).toHaveLength(0);
             expect(Response.statusCode).toBe(401);
             // expect((Response.body as Record<string, string>).name).toBe(
@@ -141,7 +141,7 @@ describe('POST /tenants', () => {
             const tenantRepository = connection.getRepository(Tenant);
             const tenants = await tenantRepository.find();
 
-            console.log(tenants);
+            // console.log(tenants);
             expect(Response.statusCode).toBe(403);
             expect(tenants).toHaveLength(0);
             // expect((Response.body as Record<string, string>).name).toBe(

@@ -5,10 +5,10 @@ import bcrypt from 'bcrypt';
 import { Roles } from '../../src/constants';
 import request from 'supertest';
 import app from '../../src/app';
-import { strict } from 'assert';
+// import { strict } from 'assert';
 import { isJWT } from '../utiles';
 
-describe.skip('POST /auth/login', () => {
+describe('POST /auth/login', () => {
     let Connection: DataSource;
 
     beforeAll(async () => {

@@ -6,7 +6,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import createJWKSMock from 'mock-jwks';
 
-describe.skip('POST /auth/login', () => {
+describe('POST /auth/login', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
     const jwksPath = '/well-known/jwks.json';
@@ -56,12 +56,12 @@ describe.skip('POST /auth/login', () => {
                 .set('Cookie', [`accessToken=${accessToken}`])
                 .send();
 
-            console.log('Response:', response.body);
+            // console.log('Response:', response.body);
 
             expect(response.statusCode).toBe(200);
             expect(response.body.id).toBe(savedUser.id);
         });
     });
 
-    describe.skip('Fields Are Missing', () => {});
+    describe('Fields Are Missing', () => {});
 });

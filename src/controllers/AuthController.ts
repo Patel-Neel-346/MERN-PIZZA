@@ -131,9 +131,9 @@ export class AuthController {
                 id,
             });
 
-            console.log('AcccessToken:', accessToken);
-            console.log('RefrehToken', refreshToken);
-            console.log('Persistant Token:', newRefreshToken);
+            // console.log('AcccessToken:', accessToken);
+            // console.log('RefrehToken', refreshToken);
+            // console.log('Persistant Token:', newRefreshToken);
 
             //generate presist refresh token
             // this.tokenService.persistRefreshToken({ ...user , id:refreshToken.id})
@@ -250,14 +250,14 @@ export class AuthController {
                 message: 'Success login ',
             });
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             next(error);
             return;
         }
     }
 
     async self(req: AuthRequest, res: Response, next: NextFunction) {
-        console.log(req.auth);
+        // console.log(req.auth);
 
         const user = await this.userService.findByid(req.auth.sub);
         // console.log('User come from DB:', user);

@@ -8,9 +8,9 @@ import { UserData } from '../../src/types';
 import { Roles } from '../../src/constants';
 import { response } from 'express';
 import { RefreshToken } from '../../src/entity/RefreshToken';
-import { Alias } from 'typeorm/query-builder/Alias';
+// import { Alias } from 'typeorm/query-builder/Alias';
 
-describe.skip('POST /auth/register', () => {
+describe('POST /auth/register', () => {
     let Connection: DataSource;
     beforeAll(async () => {
         //database connection
