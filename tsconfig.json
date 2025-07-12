@@ -152,6 +152,8 @@
 
   "exclude": [
     "node_modules",     // always exclude node_modules
-    "dist"              // optionally exclude compiled output
+    "dist",           // optionally exclude compiled output
+    "**/*.spec.ts",
+    "test"
   ]
 }
