@@ -7,7 +7,6 @@ import { validationResult } from 'express-validator';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
-import { serverConfig } from '../config';
 import { TokenService } from '../services/TokenService';
 import { RefreshToken } from '../entity/RefreshToken';
 import { CredentialService } from '../services/CredentialService';
@@ -38,7 +37,6 @@ export class AuthController {
         if (!result.isEmpty()) {
             res.status(400).json({
                 errors: result.array(),
-                // return;
             });
             return;
         }
@@ -59,36 +57,6 @@ export class AuthController {
                 role,
             });
 
-            // const payload: JwtPayload = {
-            //     sub: String(user.id),
-            //     role: user.role,
-            // };
-            // const privateKey = fs.readFileSync(
-            //     path.join(__dirname, '../../certs/private.pem'),
-            // );
-
-            // const PrivateKey = privateKey
-            //     .toString()
-            //     .replace('-----BEGIN RSA PRIVATE KEY-----', '')
-            //     .replace('-----END RSA PRIVATE KEY-----', '')
-            //     .replace(/\r?\n|\r/g, '')
-            //     .trim();
-
-            // const accessToken = sign(payload, PrivateKey, {
-            //     algorithm: 'HS256',
-            //     expiresIn: '1h', // 1 hour
-            //     issuer: 'auth-service',
-            // });
-            // const refreshToken = sign(
-            //     payload,
-            //     serverConfig.REFRESH_TOKEN_SECRET!,
-            //     {
-            //         algorithm: 'HS256',
-            //         expiresIn: '7d', // 1 hour
-            //         issuer: 'auth-service',
-            //     },
-            // );
-
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
@@ -96,8 +64,6 @@ export class AuthController {
                 lastName: user.lastName,
                 email: user.email,
             };
-            //generate accessToken
-
             const privateKey = this.readPrivateKey();
 
             if (!privateKey) {
@@ -116,28 +82,12 @@ export class AuthController {
 
             const newRefreshToken: RefreshToken =
                 await this.tokenService.persistRefreshToken(user);
-            //generate refreshToken
-
-            // if (!newRefreshToken) {
-            //     const error = createHttpError(
-            //         500,
-            //         'Faild to Create New RefreshToken Data in Database',
-            //     );
-            //     next(error);
-            //     return;
-            // }
             const id = newRefreshToken.id;
             const refreshToken = this.tokenService.generateRefreshToken({
                 ...payload,
                 id,
             });
 
-            // console.log('AcccessToken:', accessToken);
-            // console.log('RefrehToken', refreshToken);
-            // console.log('Persistant Token:', newRefreshToken);
-
-            //generate presist refresh token
-            // this.tokenService.persistRefreshToken({ ...user , id:refreshToken.id})
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
@@ -150,8 +100,6 @@ export class AuthController {
                 maxAge: 1000 * 60 * 60 * 24 * 365, // 100
                 httpOnly: true,
             });
-            // console.log(user);
-
             this.logger.info('User has been Register:::)', { user });
             res.status(201).json({ user });
         } catch (err) {
@@ -255,17 +203,13 @@ export class AuthController {
                 message: 'Success login ',
             });
         } catch (error) {
-            // console.log(error);
             next(error);
             return;
         }
     }
 
     async self(req: AuthRequest, res: Response, next: NextFunction) {
-        // console.log(req.auth);
-
         const user = await this.userService.findByid(req.auth.sub);
-        // console.log('User come from DB:', user);
         res.json(user);
     }
 
@@ -279,7 +223,6 @@ export class AuthController {
                 email: req.auth.email,
             };
 
-          
             const user = await this.userService.findByid(req.auth.sub);
 
             if (!user) {
@@ -293,9 +236,6 @@ export class AuthController {
               if (user.role === Roles.MANAGER) {
                 payload.tenant = user.tenats?.id;
             }
-
-            //create token for user to send
-
             const privateKey = this.readPrivateKey();
 
             if (!privateKey) {
@@ -336,8 +276,7 @@ export class AuthController {
 
             res.status(200).json({
                 success: 'True',
-                message:
-                    'Your Access &  refresh token has been Updated SuccessFuly 😁',
+                message:  'Your Access &  refresh token has been Updated SuccessFuly 😁',
                 accessToken,
                 refreshToken,
             });
