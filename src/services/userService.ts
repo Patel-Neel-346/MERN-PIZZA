@@ -64,9 +64,9 @@ export class UserService {
                 'role',
                 'password',
             ],
-            relations:{
-                tenats:true,
-            }
+            relations: {
+                tenats: true,
+            },
         });
     }
 
@@ -76,9 +76,9 @@ export class UserService {
                 id,
             },
             select: ['id', 'firstName', 'lastName', 'role', 'email'],
-            relations:{
-                tenats:true,
-            }
+            relations: {
+                tenats: true,
+            },
         });
     }
 
