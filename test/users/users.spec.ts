@@ -64,16 +64,92 @@ describe('POST /users/login', () => {
     });
 
     describe('Fields Are Missing', () => {});
+
+    describe('GET auth/self', () => {
+        it('Should return the 200 status code', async () => {
+            const accessToken = jwks.token({ sub: '1', role: 'any' });
+
+            const response = await request(app)
+                .get('/auth/self')
+                .set('Cookie', [`accessToken=${accessToken}`])
+                .send();
+            expect(response.statusCode).toBe(200);
+        });
+
+        it('Should return the user data', async () => {
+            const userRepository = connection.getRepository(User);
+
+            // Create and save user in the database
+            const user = await userRepository.save({
+                firstName: 'Mohit',
+                lastName: 'Singh',
+                email: 'mohit@gmail.com',
+                password: 'password',
+                role: Roles.CUSTOMER,
+            });
+
+            const accessToken = jwks.token({
+                sub: String(user.id),
+                role: user.role,
+            });
+
+            const response = await request(app)
+                .get('/auth/self')
+                .set('Cookie', [`accessToken=${accessToken}`])
+                .send();
+            expect((response.body as Record<string, string>).id).toBe(user.id);
+        });
+
+        it('Should not return the password field', async () => {
+            const userRepository = connection.getRepository(User);
+
+            // Create and save user in the database
+            const user = await userRepository.save({
+                firstName: 'Mohit',
+                lastName: 'Singh',
+                email: 'mohit@gmail.com',
+                password: 'password',
+                role: Roles.CUSTOMER,
+            });
+
+            const accessToken = jwks.token({
+                sub: String(user.id),
+                role: user.role,
+            });
+
+            const response = await request(app)
+                .get('/auth/self')
+                .set('Cookie', [`accessToken=${accessToken}`])
+                .send();
+            expect(
+                (response.body as Record<string, string>).id,
+            ).not.toHaveProperty('password');
+        });
+
+        it('Should return 401 if no token is sent', async () => {
+            const userRepository = connection.getRepository(User);
+
+            // Create and save user in the database
+            await userRepository.save({
+                firstName: 'Mohit',
+                lastName: 'Singh',
+                email: 'mohit@gmail.com',
+                password: 'password',
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).get('/auth/self').send();
+            expect(response.statusCode).toBe(401);
+        });
+    });
 });
 
+describe('POST /users/createUserOnlyManager', () => {});
 
-describe('POST /users/createUserOnlyManager',()=>{})
+describe('POST /users/update', () => {});
 
-describe('POST /users/update',()=>{})
+describe('POST /users/getAll', () => {});
 
+describe('POST /users/getOnebyId', () => {});
 
-describe('POST /users/getAll',()=>{})
-
-describe('POST /users/getOnebyId',()=>{})
-
-describe('POST /users/delete',()=>{})
+describe('POST /users/delete', () => {});

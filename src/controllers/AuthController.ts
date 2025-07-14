@@ -156,8 +156,8 @@ export class AuthController {
                 email: user.email,
             };
 
-            if(user.role === Roles.MANAGER){
-                payload.tenant = user.tenats?.id
+            if (user.role === Roles.MANAGER) {
+                payload.tenant = user.tenats?.id;
             }
 
             const privateKey = this.readPrivateKey();
@@ -233,7 +233,7 @@ export class AuthController {
                 next(error);
                 return;
             }
-              if (user.role === Roles.MANAGER) {
+            if (user.role === Roles.MANAGER) {
                 payload.tenant = user.tenats?.id;
             }
             const privateKey = this.readPrivateKey();
@@ -276,7 +276,8 @@ export class AuthController {
 
             res.status(200).json({
                 success: 'True',
-                message:  'Your Access &  refresh token has been Updated SuccessFuly 😁',
+                message:
+                    'Your Access &  refresh token has been Updated SuccessFuly 😁',
                 accessToken,
                 refreshToken,
             });

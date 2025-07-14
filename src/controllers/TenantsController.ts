@@ -21,6 +21,8 @@ export class TenantsController {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             const error = createHttpError(400, 'Invaid req');
+            next(error);
+            return;
         }
 
         try {
@@ -107,7 +109,12 @@ export class TenantsController {
     }
 
     async getTenantsDataById(req: Request, res: Response, next: NextFunction) {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            const error = createHttpError(400, 'Invaid req');
+        }
         const tenantId = req.params.id;
+        console.log('TenantID', tenantId);
 
         if (isNaN(Number(tenantId))) {
             next(createHttpError(400, 'Invalid url Params'));
@@ -118,7 +125,7 @@ export class TenantsController {
             const tenant = await this.tenantService.getOne(Number(tenantId));
 
             if (!tenant) {
-                next(createHttpError(400, 'Tenants does not exits'));
+                next(createHttpError(404, 'Tenants does not exits'));
                 return;
             }
 

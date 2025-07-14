@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { GlobalErrorHandler } from './middleware/GlobalErrorHandler';
 import path from 'path';
 import AuthRouter from './routes/AuthRoutes';
+import UserRouter from './routes/UserRoutes';
 const app = express();
 
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 //routes
 app.use('/auth', AuthRouter);
 app.use('/tenants', TenantsRouter);
+app.use('/users', UserRouter);
 //global error handler and alwayes last in all routes
 //added ERROR Handler
 
