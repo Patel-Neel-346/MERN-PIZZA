@@ -122,19 +122,22 @@
 
 
 {
-    "include": [
-    "src",              // your main source folder
-    "**/*.ts",          // include all TypeScript files anywhere in the project
-    "**/*.js",          // include JS config/test files like jest.config.js
-    "app.spec.ts",      // include top-level test file
-    "jest.config.js"    // include Jest config
-, "scripts/generatekeys.mjs"  ],
+  "include": [
+    "src",
+    "test",
+    "**/*.ts",
+    "**/*.js",
+    "app.spec.ts",
+    "jest.config.js",
+    "scripts/generatekeys.mjs"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "compilerOptions": {
-    /* Project Structure */
-    "rootDir": "." ,
+    "rootDir": ".",
     "outDir": "./dist",
-
-    /* Language and Environment */
     "target": "es2016",
     "lib": ["ES6"],
     "module": "commonjs",
@@ -144,16 +147,7 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization":false,
-    
-  },
-
-
-
-  "exclude": [
-    "node_modules",     // always exclude node_modules
-    "dist",           // optionally exclude compiled output
-    "**/*.spec.ts",
-    "test"
-  ]
+    "strictPropertyInitialization": false
+  }
 }
+

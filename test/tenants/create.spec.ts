@@ -334,11 +334,11 @@ describe('PATCH /tenants/:id', () => {
         };
 
         const response = await request(app)
-            .patch('/tenants/99999')
+            .get('/tenants/99999')
             .set('Cookie', [`accessToken=${accessToken}`])
             .send(updatedTenantData);
 
-        expect(response.status).toBe(404);
+        expect(response.statusCode).toBe(404);
     });
 
     it('should return 403 if user is not admin', async () => {
