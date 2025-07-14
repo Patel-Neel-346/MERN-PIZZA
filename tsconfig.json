@@ -122,23 +122,19 @@
 
 
 {
-  "include": [
-    "src",
-    "test",
-    "**/*.ts",
-    "**/*.js",
-    "app.spec.ts",
-    "jest.config.js",
-    "scripts/generatekeys.mjs"
-  ],
+  "include": ["src", "scripts"],
+
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules", 
+    "dist", 
+    "test",         
+    "**/*.spec.ts"  
   ],
+
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./dist",
-    "target": "es2016",
+    "rootDir": ".",                  // base directory for source files
+    "outDir": "./dist",              // compiled JS output
+    "target": "es2016",              // JS version
     "lib": ["ES6"],
     "module": "commonjs",
     "esModuleInterop": true,
@@ -150,4 +146,5 @@
     "strictPropertyInitialization": false
   }
 }
+
 
