@@ -115,10 +115,8 @@ export class UserService {
             queryBuilder.where(
                 new Brackets((qb) => {
                     qb.where(
-                        "CONCAT(users.firstName, ' ',users.lastName) ILIKE :q",
-                        {
-                            q: searchItem,
-                        },
+                        'CONCAT(users."firstName", \' \', users."lastName") ILIKE :q',
+                        { q: searchItem },
                     ).orWhere('users.email ILIKE :q', { q: searchItem });
                 }),
             );
