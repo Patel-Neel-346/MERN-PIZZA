@@ -21,13 +21,13 @@ export class AuthController {
         this.userService = userService;
     }
 
-    readPrivateKey() {
-        const privateKey = fs.readFileSync(
-            path.join(__dirname, '../../certs/private.pem'),
-        );
+    // readPrivateKey() {
+    //     const privateKey = fs.readFileSync(
+    //         path.join(__dirname, '../../certs/private.pem'),
+    //     );
 
-        return privateKey;
-    }
+    //     return privateKey;
+    // }
     async register(
         req: RegisterUserRequest,
         res: Response,
@@ -64,20 +64,20 @@ export class AuthController {
                 lastName: user.lastName,
                 email: user.email,
             };
-            const privateKey = this.readPrivateKey();
+            // const privateKey = this.readPrivateKey();
 
-            if (!privateKey) {
-                const error = createHttpError(
-                    500,
-                    'faild to read private key from certs floder',
-                );
+            // if (!privateKey) {
+            //     const error = createHttpError(
+            //         500,
+            //         'faild to read private key from certs floder',
+            //     );
 
-                next(error);
-                return;
-            }
+            //     next(error);
+            //     return;
+            // }
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                privateKey,
+                // privateKey,
             );
 
             const newRefreshToken: RefreshToken =
@@ -160,20 +160,20 @@ export class AuthController {
                 payload.tenant = user.tenats?.id;
             }
 
-            const privateKey = this.readPrivateKey();
+            // const privateKey = this.readPrivateKey();
 
-            if (!privateKey) {
-                const error = createHttpError(
-                    500,
-                    'faild to read private key from certs floder',
-                );
+            // if (!privateKey) {
+            //     const error = createHttpError(
+            //         500,
+            //         'faild to read private key from certs floder',
+            //     );
 
-                next(error);
-                return;
-            }
+            //     next(error);
+            //     return;
+            // }
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                privateKey,
+                // privateKey,
             );
 
             const newRefreshToken =
@@ -236,20 +236,20 @@ export class AuthController {
             if (user.role === Roles.MANAGER) {
                 payload.tenant = user.tenats?.id;
             }
-            const privateKey = this.readPrivateKey();
+            // const privateKey = this.readPrivateKey();
 
-            if (!privateKey) {
-                const error = createHttpError(
-                    500,
-                    'faild to read private key from certs floder',
-                );
+            // if (!privateKey) {
+            //     const error = createHttpError(
+            //         500,
+            //         'faild to read private key from certs floder',
+            //     );
 
-                next(error);
-                return;
-            }
+            //     next(error);
+            //     return;
+            // }
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                privateKey,
+                // privateKey,
             );
 
             const newRefreshToken =

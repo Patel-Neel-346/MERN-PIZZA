@@ -4,25 +4,16 @@ import { JwtPayload, sign } from 'jsonwebtoken';
 import { serverConfig } from '../config';
 import createHttpError from 'http-errors';
 import { User } from '../entity/User';
+import { loadPrivateKey } from '../config/keys';
 
 export class TokenService {
     constructor(
         private readonly refreshTokenRepository: Repository<RefreshToken>,
     ) {}
 
-    generateAccessToken(payload: JwtPayload, PrivateKey: NonSharedBuffer) {
-        // let privateKey;
-
-        // if (!serverConfig.PRIVATE_KEY) {
-        //     const error = createHttpError(
-        //         500,
-        //         'error while reading private key',
-        //     );
-        //     throw error;
-        // }
-
+    generateAccessToken(payload: JwtPayload) {
         try {
-            // privateKey = serverConfig.PRIVATE_KEY;
+            const PrivateKey = loadPrivateKey();
             const accessToken = sign(payload, PrivateKey, {
                 algorithm: 'RS256',
                 expiresIn: '1h',
