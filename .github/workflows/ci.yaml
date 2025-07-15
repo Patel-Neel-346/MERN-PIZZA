@@ -1,0 +1,69 @@
+name: CI
+
+on:
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-test:
+        name: Build and Test the Project
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3  #prebuild action run 
+
+            - name: Install Dependencies
+              run: npm ci # install Dep
+
+            - name: Run ESLint
+              run: npm run lint:check  #running lint for code checking
+
+            - name: Test and Coverage
+              run: npm run test #runing test and added ENV for running test
+              env:
+                  DB_HOST: ${{ secrets.TEST_DB_HOST }}
+                  DB_PORT: ${{ secrets.TEST_DB_PORT }}
+                  DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}
+                  DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+                  DB_NAME: ${{ secrets.TEST_DB_NAME }}
+                  REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+                  JWKS_URI: ${{ secrets.JWKS_URI }}
+                  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
+            - name: Build TypeScript
+              run: npm run build #ts build to js
+
+            - name: SonarCloud Scan
+              uses: SonarSource/sonarcloud-github-action@master # sonar cloud for checking you code from github and prebuild action are used 
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # secound job is building an docker images and push it into docker hub
+    build-and-push-docker:
+        name: Build and Push Docker Image
+        needs: build-and-test
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' #this condition trigger when branch is main and action is push then  only  and only docker images will build 
+        env:
+            IMAGE_NAME: neelpatel733/mern_auth_service
+            IMAGE_TAG: build-${{ github.run_number }}
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+            - name: Build Docker Image
+              run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f docker/prod/Dockerfile .
+
+            - name: Push Docker Image to Docker Hub
+              run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
