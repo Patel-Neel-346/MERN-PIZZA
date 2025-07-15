@@ -8,6 +8,7 @@
       "lint": "eslint src",
       "build": "tsc",
       "lint:fix": "eslint src --fix",
+      "link:check":"eslint src --check",
       "format:fix": "prettier --write 'src/**/*.{ts,js,json,md}'",
       "format:check": "prettier --check 'src/**/*.{ts,js,json,md}'",
       "prepare": "husky",
