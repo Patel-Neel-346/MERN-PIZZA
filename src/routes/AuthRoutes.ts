@@ -13,16 +13,14 @@ import authenticate from '../middleware/authenticate';
 import { AuthRequest } from '../types';
 import validateRefreshToken from '../middleware/validateRefreshToken';
 import parseRefreshToken from '../middleware/parseRefreshToken';
-// import { body } from 'express-validator';
 
-//router
 const AuthRouter = express.Router();
 
-//repository instance to pass in controller
+
 const userRepository = AppDataSource.getRepository(User);
 const refreshTokenRepositroy = AppDataSource.getRepository(RefreshToken);
 
-//class instance
+
 const userService = new UserService(userRepository);
 const tokenService = new TokenService(refreshTokenRepositroy);
 const credentialService = new CredentialService();

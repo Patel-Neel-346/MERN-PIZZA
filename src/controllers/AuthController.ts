@@ -1,12 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { AuthRequest, RegisterUserRequest } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
 import { JwtPayload, sign } from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
 import { TokenService } from '../services/TokenService';
 import { RefreshToken } from '../entity/RefreshToken';
 import { CredentialService } from '../services/CredentialService';
@@ -20,14 +18,6 @@ export class AuthController {
     ) {
         this.userService = userService;
     }
-
-    // readPrivateKey() {
-    //     const privateKey = fs.readFileSync(
-    //         path.join(__dirname, '../../certs/private.pem'),
-    //     );
-
-    //     return privateKey;
-    // }
     async register(
         req: RegisterUserRequest,
         res: Response,
@@ -64,20 +54,9 @@ export class AuthController {
                 lastName: user.lastName,
                 email: user.email,
             };
-            // const privateKey = this.readPrivateKey();
-
-            // if (!privateKey) {
-            //     const error = createHttpError(
-            //         500,
-            //         'faild to read private key from certs floder',
-            //     );
-
-            //     next(error);
-            //     return;
-            // }
+        
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                // privateKey,
             );
 
             const newRefreshToken: RefreshToken =
@@ -97,7 +76,7 @@ export class AuthController {
             res.cookie('refreshToken', refreshToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, // 100
+                maxAge: 1000 * 60 * 60 * 24 * 365,
                 httpOnly: true,
             });
             this.logger.info('User has been Register:::)', { user });
@@ -119,7 +98,6 @@ export class AuthController {
         }
 
         const { email, password } = req.body;
-        //debug userData
         this.logger.debug('new request to login User', {
             email,
             password: '*************',
@@ -160,20 +138,9 @@ export class AuthController {
                 payload.tenant = user.tenats?.id;
             }
 
-            // const privateKey = this.readPrivateKey();
-
-            // if (!privateKey) {
-            //     const error = createHttpError(
-            //         500,
-            //         'faild to read private key from certs floder',
-            //     );
-
-            //     next(error);
-            //     return;
-            // }
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                // privateKey,
+               
             );
 
             const newRefreshToken =
@@ -194,7 +161,7 @@ export class AuthController {
             res.cookie('refreshToken', refreshToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1y
+                maxAge: 1000 * 60 * 60 * 24 * 365,
                 httpOnly: true,
             });
 
@@ -235,21 +202,10 @@ export class AuthController {
             }
             if (user.role === Roles.MANAGER) {
                 payload.tenant = user.tenats?.id;
-            }
-            // const privateKey = this.readPrivateKey();
-
-            // if (!privateKey) {
-            //     const error = createHttpError(
-            //         500,
-            //         'faild to read private key from certs floder',
-            //     );
-
-            //     next(error);
-            //     return;
-            // }
+            }  
             const accessToken = this.tokenService.generateAccessToken(
                 payload,
-                // privateKey,
+            
             );
 
             const newRefreshToken =
@@ -263,14 +219,14 @@ export class AuthController {
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
-                maxAge: 1000 * 60, // 1m
+                maxAge: 1000 * 60,
                 httpOnly: true,
             });
 
             res.cookie('refreshToken', refreshToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 365, // 1Y
+                maxAge: 1000 * 60 * 60 * 24 * 365,
                 httpOnly: true,
             });
 

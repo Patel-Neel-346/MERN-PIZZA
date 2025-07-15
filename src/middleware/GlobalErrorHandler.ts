@@ -20,7 +20,6 @@ export const GlobalErrorHandler = (
         method: req.method,
     });
 
-    // console.log(err);
     res.status(statusCode).json({
         errors: [
             {

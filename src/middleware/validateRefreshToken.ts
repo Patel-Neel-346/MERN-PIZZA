@@ -1,6 +1,4 @@
 import { expressjwt } from 'express-jwt';
-// import { server } from 'typescript';
-
 import { Request } from 'express';
 import { serverConfig } from '../config';
 import { AppDataSource } from '../config/data-source';
@@ -17,7 +15,6 @@ export default expressjwt({
     },
     async isRevoked(req: Request, token) {
         try {
-            // console.log(token);
             const refreshTokenRepository =
                 AppDataSource.getRepository(RefreshToken);
 

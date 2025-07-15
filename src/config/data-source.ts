@@ -1,9 +1,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { User } from '../entity/User';
 import { serverConfig } from '.';
-import { RefreshToken } from '../entity/RefreshToken';
-import { Tenant } from '../entity/Tenants';
+
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -12,12 +10,9 @@ export const AppDataSource = new DataSource({
     username: serverConfig.DB_USERNAME,
     password: serverConfig.DB_PASSWORD,
     database: serverConfig.DB_NAME,
-
-    //IMPOTANT NOTICE !!!!!!!!!!!!!!!!!!!!!!!!!!
-    //Dont use this in Production use or do false only do in test and test for true
-    synchronize: false, //only true in development && test development false in Production :xD
+    synchronize: false,
     logging: false,
-    entities: ['src/entity/*.{ts,js}'], //tables ,documents
+    entities: ['src/entity/*.{ts,js}'],
     migrations: ['src/migration/*.{ts,js}'],
     subscribers: [],
 });

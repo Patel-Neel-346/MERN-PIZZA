@@ -1,7 +1,5 @@
 import { config } from 'dotenv';
 import path from 'path';
-// import logger from './logger';
-
 config({
     path: path.join(__dirname, `../../.env.dev`),
 });

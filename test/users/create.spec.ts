@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import app from '../../src/app';
 import request from 'supertest';
@@ -7,17 +7,15 @@ import { Roles } from '../../src/constants';
 import { User } from '../../src/entity/User';
 import { createTenant } from '../utiles';
 import { Tenant } from '../../src/entity/Tenants';
-import { UserData } from '../../src/types';
 
 describe('POST /users', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
     const jwksPath = '/well-known/jwks.json';
-    const jwks = createJWKSMock(jwksOrigin, jwksPath);
+    const jwks: JWKSMock = createJWKSMock(jwksOrigin, jwksPath);
 
     beforeAll(async () => {
         process.env.JWKS_URL = `${jwksOrigin}${jwksPath}`;
-
         connection = await AppDataSource.initialize();
     });
 
@@ -35,15 +33,12 @@ describe('POST /users', () => {
         await connection.destroy();
     });
 
-    //happy path
-
     describe('Given all fields', () => {
         it('should create user in database', async () => {
             const tenant = await createTenant(connection.getRepository(Tenant));
             const accessToken = jwks.token({ sub: '1', role: Roles.ADMIN });
             const userRepository = connection.getRepository(User);
 
-            // Create and save user in the database
             const userData = {
                 firstName: 'Mohit',
                 lastName: 'Singh',
@@ -63,12 +58,10 @@ describe('POST /users', () => {
             expect(users[0].email).toBe(userData.email);
         });
 
-        it('should create user with manager in database', async () => {
+        it('should create user with manager role in database', async () => {
             const tenant = await createTenant(connection.getRepository(Tenant));
-
             const accessToken = jwks.token({ sub: '1', role: Roles.ADMIN });
 
-            // Create and save user in the database
             const userData = {
                 firstName: 'Mohit',
                 lastName: 'Singh',
@@ -89,6 +82,4 @@ describe('POST /users', () => {
             expect(users[0].role).toBe(Roles.MANAGER);
         });
     });
-
-    //sad path
 });

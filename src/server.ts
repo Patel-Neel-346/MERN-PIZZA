@@ -9,7 +9,6 @@ const startServer = async () => {
         await AppDataSource.initialize();
         logger.info('database connected to Postgres Server');
         app.listen(PORT, () => {
-            // console.log(`Server is running on port ${PORT}`);
             logger.error('Error');
             logger.info('Listening on port', { port: PORT });
         });
