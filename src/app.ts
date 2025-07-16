@@ -1,7 +1,5 @@
 import 'reflect-metadata';
-import express, { NextFunction, Request, Response } from 'express';
-import { HttpError } from 'http-errors';
-import logger from './config/logger';
+import express from 'express';
 import TenantsRouter from './routes/TenantsRoutes';
 import cookieParser from 'cookie-parser';
 import { GlobalErrorHandler } from './middleware/GlobalErrorHandler';
@@ -22,25 +20,5 @@ app.get('/', (_req: express.Request, res: express.Response) => {
 app.use('/auth', AuthRouter);
 app.use('/tenants', TenantsRouter);
 app.use('/users', UserRouter);
-//global error handler and alwayes last in all routes
-//added ERROR Handler
-
-// app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-//     logger.error(err.message);
-//     const statusCode = err.statusCode || 500;
-
-//     res.status(statusCode).json({
-//         errors: [
-//             {
-//                 type: err.name,
-//                 msg: err.message,
-//                 path: '',
-//                 location: '',
-//             },
-//         ],
-//     });
-// });
-
-//global error handler
 app.use(GlobalErrorHandler);
 export default app;

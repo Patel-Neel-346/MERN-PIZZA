@@ -2,12 +2,9 @@ import { expressjwt } from 'express-jwt';
 import { expressJwtSecret, JwksClient } from 'jwks-rsa';
 import { serverConfig } from '../config';
 import { Request } from 'express';
-// JwksClient
 
 export default expressjwt({
     secret: expressJwtSecret({
-        // jwksUri: serverConfig.JWKS_URL!,
-
         jwksUri:
             serverConfig.JWKS_URL! ||
             'http://localhost:5501/well-known/jwks.json',

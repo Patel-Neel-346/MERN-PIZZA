@@ -4,10 +4,6 @@ import { Logger } from 'winston';
 import { PaginationParams, RegisterTenantsrequest } from '../types';
 import { matchedData, validationResult } from 'express-validator';
 import createHttpError from 'http-errors';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
-// import { Logger } from 'typeorm';
-
 export class TenantsController {
     constructor(
         private readonly tenantService: TenantService,
@@ -37,7 +33,7 @@ export class TenantsController {
                 id: tenant.id,
             });
 
-            // console.log(tenant);
+        
 
             res.status(201).json(tenant);
         } catch (error) {
@@ -50,7 +46,7 @@ export class TenantsController {
         res: Response,
         next: NextFunction,
     ) {
-        //validation
+        
         const result = validationResult(req);
 
         if (!result.isEmpty()) {
@@ -112,6 +108,8 @@ export class TenantsController {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             const error = createHttpError(400, 'Invaid req');
+            next(error)
+            return
         }
         const tenantId = req.params.id;
         console.log('TenantID', tenantId);

@@ -2,7 +2,6 @@ import { Brackets, Repository } from 'typeorm';
 import { Tenant } from '../entity/Tenants';
 import { ITenantData, PaginationParams } from '../types';
 import createHttpError from 'http-errors';
-import { NextFunction } from 'express';
 
 export class TenantService {
     constructor(private readonly tenanteRepository: Repository<Tenant>) {}

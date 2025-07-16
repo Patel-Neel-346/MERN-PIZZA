@@ -1,9 +1,8 @@
 import { Brackets, Repository } from 'typeorm';
-import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
 import { LimitedUserData, PaginationParams, UserData } from '../types';
 import createHttpError from 'http-errors';
-import { Roles } from '../constants';
+
 import bcrypt from 'bcrypt';
 
 export class UserService {
@@ -17,9 +16,7 @@ export class UserService {
         role,
         tenantId,
     }: UserData) {
-        // const userRepository = AppDataSource.getRepository(User);
-        // const user = await this.userRepository.findOneBy({ email: email });
-        const user = await this.userRepository.findOne({
+         const user = await this.userRepository.findOne({
             where: { email: email },
         });
 

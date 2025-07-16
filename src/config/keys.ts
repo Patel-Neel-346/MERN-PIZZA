@@ -1,10 +1,8 @@
-// src/config/keys.ts
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Make sure env is loaded
-
+dotenv.config(); 
 export function loadPrivateKey(): string {
     const envPath = process.env.PRIVATE_KEY_PATH;
 

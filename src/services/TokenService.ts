@@ -13,7 +13,7 @@ export class TokenService {
 
     generateAccessToken(payload: JwtPayload) {
         try {
-            const PrivateKey = loadPrivateKey();
+            const PrivateKey = serverConfig.PRIVATE_KEY ? serverConfig.PRIVATE_KEY : loadPrivateKey();
             const accessToken = sign(payload, PrivateKey, {
                 algorithm: 'RS256',
                 expiresIn: '1h',
@@ -35,18 +35,10 @@ export class TokenService {
     }
 
     generateRefreshToken(payload: JwtPayload) {
-        // let privateKey;
-
-        // if (!serverConfig.REFRESH_TOKEN_SECRET) {
-        //     const error = createHttpError(
-        //         500,
-        //         'error while reading private key',
-        //     );
-        //     throw error;
-        // }
+  
 
         try {
-            // const refreshToken = ;
+
             const refreshToken = sign(
                 payload,
                 serverConfig.REFRESH_TOKEN_SECRET!,

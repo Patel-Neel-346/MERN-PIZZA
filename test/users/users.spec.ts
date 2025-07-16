@@ -14,7 +14,6 @@ describe('POST /users/login', () => {
 
     beforeAll(async () => {
         process.env.JWKS_URL = `${jwksOrigin}${jwksPath}`;
-
         connection = await AppDataSource.initialize();
     });
 

@@ -1,12 +1,9 @@
 import {
     Column,
-    // Column,
     CreateDateColumn,
     Entity,
-    // ManyToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
-    // UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'tenants' })
