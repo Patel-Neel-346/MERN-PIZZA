@@ -21,7 +21,7 @@ jobs:
               run: npm ci # install Dep
 
             - name: Run ESLint
-              run: npm run lint:check  #running lint for code checking
+              run: npm run lint  #running lint for code checking
 
             - name: Test and Coverage
               run: npm run test #runing test and added ENV for running test
