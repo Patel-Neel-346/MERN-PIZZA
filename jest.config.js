@@ -12,5 +12,6 @@ module.exports = {
     collectCoverage: true,
     coverageProvider: 'v8',
     collectCoverageFrom: ['src/**/*.ts', '!test/**', '!**/node_modules/**'],
-    testTimeout:15000
+    testTimeout:15000,
+    setupFiles: ['<rootDir>/test/setup.ts'],
 };
