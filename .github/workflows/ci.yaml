@@ -24,7 +24,9 @@ jobs:
               run: npm run lint  #running lint for code checking
 
             - name: Test and Coverage
-              run: npm run test #runing test and added ENV for running test
+              run: |
+                 export NODE_OPTIONS="--dns-result-order=ipv4first"
+                 npm run test
               env:
                   DB_HOST: ${{ secrets.TEST_DB_HOST }}
                   DB_PORT: ${{ secrets.TEST_DB_PORT }}
