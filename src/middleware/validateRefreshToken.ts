@@ -13,6 +13,7 @@ export default expressjwt({
     algorithms: ['HS256'],
     getToken(req: Request): string {
         const { refreshToken } = req.cookies as Record<string, string>;
+        console.log('geting token ', refreshToken);
         return refreshToken;
     },
     async isRevoked(req: Request, token) {
@@ -29,6 +30,7 @@ export default expressjwt({
                     },
                 },
             });
+            console.log(refreshToken);
 
             return refreshToken === null;
         } catch (error) {

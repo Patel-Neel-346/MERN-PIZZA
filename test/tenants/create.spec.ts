@@ -2,9 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import request from 'supertest';
 import app from '../../src/app';
-import { response } from 'express';
 import { Tenant } from '../../src/entity/Tenants';
-import { ITenantData } from '../../src/types';
 import createJWKSMock, { JWKSMock } from 'mock-jwks';
 import { Roles } from '../../src/constants';
 
@@ -59,10 +57,6 @@ describe('POST /tenants/create', () => {
                 .set('Cookie', [`accessToken=${token}`])
                 .send(tenantData);
 
-            //assert
-            // console.log(Response.body);
-
-            // console.log(Response.statusCode);
             expect(Response.statusCode).toBe(201);
         });
 
@@ -94,10 +88,6 @@ describe('POST /tenants/create', () => {
         });
 
         it('should return 401 if user is not authenticated!', async () => {
-            // const token = jwks.token({
-            //     sub: '2',
-            //     role: Roles.ADMIN,
-            // });
             const tenantData = {
                 name: 'Tenant Name',
                 address: 'Tenant Address',
@@ -107,18 +97,13 @@ describe('POST /tenants/create', () => {
 
             const Response = await request(app)
                 .post('/tenants')
-                // .set('Cookie', `accessToken=${token}`)
                 .send(tenantData);
 
             const tenantRepository = connection.getRepository(Tenant);
             const tenants = await tenantRepository.find();
 
-            // console.log(tenants);
             expect(tenants).toHaveLength(0);
             expect(Response.statusCode).toBe(401);
-            // expect((Response.body as Record<string, string>).name).toBe(
-            //     tenantData.name,
-            // );
         });
 
         it('should return 403 if user is not admin', async () => {
@@ -141,12 +126,8 @@ describe('POST /tenants/create', () => {
             const tenantRepository = connection.getRepository(Tenant);
             const tenants = await tenantRepository.find();
 
-            // console.log(tenants);
             expect(Response.statusCode).toBe(403);
             expect(tenants).toHaveLength(0);
-            // expect((Response.body as Record<string, string>).name).toBe(
-            //     tenantData.name,
-            // );
         });
     });
 
@@ -356,11 +337,3 @@ describe('PATCH /tenants/:id', () => {
         expect(response.status).toBe(403);
     });
 });
-
-describe('POST /tenants/update', () => {});
-
-describe('POST /tenants/getAll', () => {});
-
-describe('POST /tenants/getByID', () => {});
-
-describe('POST /tenants/delete', () => {});

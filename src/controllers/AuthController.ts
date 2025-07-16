@@ -288,7 +288,8 @@ export class AuthController {
 
     async logout(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            await this.tokenService.deleteRefreshToken(Number(req.auth.id));
+            console.log(req.auth);
+            await this.tokenService.deleteRefreshToken(Number(req.auth.sub));
             this.logger.info('refresh token has been Deleted!', {
                 token: req.auth.id,
             });

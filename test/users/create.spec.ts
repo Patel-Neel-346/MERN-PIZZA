@@ -1,13 +1,12 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import app from '../../src/app';
 import request from 'supertest';
-import createJWKSMock, { JWKSMock } from 'mock-jwks';
+import createJWKSMock from 'mock-jwks';
 import { Roles } from '../../src/constants';
 import { User } from '../../src/entity/User';
 import { createTenant } from '../utiles';
 import { Tenant } from '../../src/entity/Tenants';
-import { UserData } from '../../src/types';
 
 describe('POST /users', () => {
     let connection: DataSource;

@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 import { Roles } from '../../src/constants';
 import request from 'supertest';
 import app from '../../src/app';
-// import { strict } from 'assert';
 import { isJWT } from '../utiles';
 
 describe('POST /auth/login', () => {

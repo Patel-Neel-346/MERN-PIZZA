@@ -56,8 +56,6 @@ describe('POST /users/login', () => {
                 .set('Cookie', [`accessToken=${accessToken}`])
                 .send();
 
-            // console.log('Response:', response.body);
-
             expect(response.statusCode).toBe(200);
             expect(response.body.id).toBe(savedUser.id);
         });
@@ -79,7 +77,6 @@ describe('POST /users/login', () => {
         it('Should return the user data', async () => {
             const userRepository = connection.getRepository(User);
 
-            // Create and save user in the database
             const user = await userRepository.save({
                 firstName: 'Mohit',
                 lastName: 'Singh',
@@ -103,7 +100,6 @@ describe('POST /users/login', () => {
         it('Should not return the password field', async () => {
             const userRepository = connection.getRepository(User);
 
-            // Create and save user in the database
             const user = await userRepository.save({
                 firstName: 'Mohit',
                 lastName: 'Singh',
@@ -129,7 +125,6 @@ describe('POST /users/login', () => {
         it('Should return 401 if no token is sent', async () => {
             const userRepository = connection.getRepository(User);
 
-            // Create and save user in the database
             await userRepository.save({
                 firstName: 'Mohit',
                 lastName: 'Singh',
@@ -143,13 +138,3 @@ describe('POST /users/login', () => {
         });
     });
 });
-
-describe('POST /users/createUserOnlyManager', () => {});
-
-describe('POST /users/update', () => {});
-
-describe('POST /users/getAll', () => {});
-
-describe('POST /users/getOnebyId', () => {});
-
-describe('POST /users/delete', () => {});

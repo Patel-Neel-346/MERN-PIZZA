@@ -2,15 +2,11 @@ import { DataSource, Repository } from 'typeorm';
 import { Tenant } from '../../src/entity/Tenants';
 
 export const truncateTables = async (Connection: DataSource) => {
-    //get all entites
-    const entites = Connection.entityMetadatas; // list of all entites
-
-    //get specific entites by for each loop
+    const entites = Connection.entityMetadatas;
 
     for (const entity of entites) {
-        //get entity table name form all Entites
         const repository = Connection.getRepository(entity.name);
-        //clear all
+
         await repository.clear();
     }
 };
@@ -33,9 +29,7 @@ export const isJWT = (token: string | null): boolean => {
     } catch (error) {
         return false;
     }
-    // return true;
 };
-
 
 export const createTenant = async (repository: Repository<Tenant>) => {
     const tenant = await repository.save({

@@ -8,7 +8,8 @@ import request, { Response } from 'supertest';
 import app from '../../src/app';
 import { isJWT } from '../utiles';
 import createJWKSMock, { JWKSMock } from 'mock-jwks';
-
+import { sign, JwtPayload } from 'jsonwebtoken';
+import { serverConfig } from '../../src/config';
 describe('AUTH ROUTES', () => {
     let connection: DataSource;
     const jwksOrigin = 'http://localhost:5501';
@@ -67,7 +68,7 @@ describe('AUTH ROUTES', () => {
                     .send(userData);
 
                 expect(response.headers['content-type']).toEqual(
-                    expect.stringContaining('json')
+                    expect.stringContaining('json'),
                 );
             });
 
@@ -128,22 +129,21 @@ describe('AUTH ROUTES', () => {
 
                 const cookies = response.headers['set-cookie'] || [];
 
-                if(Array.isArray(cookies)){
+                if (Array.isArray(cookies)) {
                     cookies.forEach((cookie: string) => {
-                    if (cookie.startsWith('accessToken')) {
-                        accessToken = cookie.split(';')[0].split('=')[1];
-                    }
-                    if (cookie.startsWith('refreshToken')) {
-                        refreshToken = cookie.split(';')[0].split('=')[1];
-                    }
-                });
-
+                        if (cookie.startsWith('accessToken')) {
+                            accessToken = cookie.split(';')[0].split('=')[1];
+                        }
+                        if (cookie.startsWith('refreshToken')) {
+                            refreshToken = cookie.split(';')[0].split('=')[1];
+                        }
+                    });
                 }
-                
+
                 expect(accessToken).not.toBeNull();
                 expect(refreshToken).not.toBeNull();
-                expect(isJWT(accessToken!)).toBeTruthy();
-                expect(isJWT(refreshToken!)).toBeTruthy();
+                expect(isJWT(accessToken)).toBeTruthy();
+                expect(isJWT(refreshToken)).toBeTruthy();
             });
 
             it('should store refresh token in database', async () => {
@@ -159,7 +159,8 @@ describe('AUTH ROUTES', () => {
                     .post('/auth/register')
                     .send(userData);
 
-                const refreshTokenRepository = connection.getRepository(RefreshToken);
+                const refreshTokenRepository =
+                    connection.getRepository(RefreshToken);
                 const tokens = await refreshTokenRepository.find({
                     where: { user: { id: response.body.user.id } },
                     relations: ['user'],
@@ -234,23 +235,22 @@ describe('AUTH ROUTES', () => {
                 let refreshToken: string | null = null;
 
                 const cookies = response.headers['set-cookie'] || [];
-                if(Array.isArray(cookies)){
-                     cookies.forEach((cookie: string) => {
-                    if (cookie.startsWith('accessToken')) {
-                        accessToken = cookie.split(';')[0].split('=')[1];
-                    }
-                    if (cookie.startsWith('refreshToken')) {
-                        refreshToken = cookie.split(';')[0].split('=')[1];
-                    }
-                });
+                if (Array.isArray(cookies)) {
+                    cookies.forEach((cookie: string) => {
+                        if (cookie.startsWith('accessToken')) {
+                            accessToken = cookie.split(';')[0].split('=')[1];
+                        }
+                        if (cookie.startsWith('refreshToken')) {
+                            refreshToken = cookie.split(';')[0].split('=')[1];
+                        }
+                    });
                 }
-               
 
                 expect(response.statusCode).toBe(200);
                 expect(accessToken).not.toBeNull();
                 expect(refreshToken).not.toBeNull();
-                expect(isJWT(accessToken!)).toBeTruthy();
-                expect(isJWT(refreshToken!)).toBeTruthy();
+                expect(isJWT(accessToken)).toBeTruthy();
+                expect(isJWT(refreshToken)).toBeTruthy();
             });
         });
 
@@ -324,7 +324,9 @@ describe('AUTH ROUTES', () => {
         });
 
         it('should return 401 without token', async () => {
-            const response: Response = await request(app).get('/auth/self').send();
+            const response: Response = await request(app)
+                .get('/auth/self')
+                .send();
             expect(response.statusCode).toBe(401);
         });
     });
@@ -332,7 +334,8 @@ describe('AUTH ROUTES', () => {
     describe('POST /auth/refresh', () => {
         it('should refresh tokens', async () => {
             const userRepository = connection.getRepository(User);
-            const refreshTokenRepository = connection.getRepository(RefreshToken);
+            const refreshTokenRepository =
+                connection.getRepository(RefreshToken);
 
             const userData = {
                 firstName: 'Test',
@@ -346,19 +349,35 @@ describe('AUTH ROUTES', () => {
             const refreshTokenData = await refreshTokenRepository.save({
                 user: savedUser,
                 expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+                relations: ['users'],
             });
 
-            const refreshToken = jwks.token({
+            const payload: JwtPayload = {
                 sub: String(savedUser.id),
                 role: savedUser.role,
+                firstname: savedUser.firstName,
+                lastName: savedUser.lastName,
                 email: savedUser.email,
                 id: refreshTokenData.id,
-            });
+            };
+            const refreshToken = sign(
+                payload,
+
+                `${serverConfig.REFRESH_TOKEN_SECRET!}`,
+                {
+                    algorithm: 'HS256',
+                    expiresIn: '1y',
+                    issuer: 'auth-server',
+                    jwtid: String(payload.id),
+                },
+            );
 
             const response: Response = await request(app)
                 .post('/auth/refresh')
                 .set('Cookie', [`refreshToken=${refreshToken}`])
                 .send();
+
+            console.log(response.body as Record<string, string>);
 
             expect(response.statusCode).toBe(200);
             expect(response.body.success).toBe('True');
@@ -368,7 +387,8 @@ describe('AUTH ROUTES', () => {
     describe('POST /auth/logout', () => {
         it('should logout user and clear tokens', async () => {
             const userRepository = connection.getRepository(User);
-            const refreshTokenRepository = connection.getRepository(RefreshToken);
+            const refreshTokenRepository =
+                connection.getRepository(RefreshToken);
 
             const userData = {
                 firstName: 'Test',
@@ -384,20 +404,36 @@ describe('AUTH ROUTES', () => {
                 expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
             });
 
-            const refreshToken = jwks.token({
+            const payload: JwtPayload = {
                 sub: String(savedUser.id),
                 role: savedUser.role,
+                firstname: savedUser.firstName,
+                lastName: savedUser.lastName,
                 email: savedUser.email,
                 id: refreshTokenData.id,
-            });
+            };
+            const refreshToken = sign(
+                payload,
+                `${serverConfig.REFRESH_TOKEN_SECRET!}`,
+                {
+                    algorithm: 'HS256',
+                    expiresIn: '1y',
+                    issuer: 'auth-server',
+                    jwtid: String(payload.id),
+                },
+            );
+
+            console.log('RefreshTokenChecking::', refreshToken);
 
             const response: Response = await request(app)
-                .post('/auth/logout')
+                .get('/auth/logout')
                 .set('Cookie', [`refreshToken=${refreshToken}`])
                 .send();
 
             expect(response.statusCode).toBe(200);
-            expect(response.body.message).toBe('User has been SuccesFully log out');
+            expect(response.body.message).toBe(
+                'User has been SuccesFully log out',
+            );
         });
     });
 });

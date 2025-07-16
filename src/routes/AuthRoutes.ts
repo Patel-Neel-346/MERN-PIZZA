@@ -61,7 +61,7 @@ AuthRouter.post(
         authcontroller.refresh(req as AuthRequest, res, next),
 );
 
-AuthRouter.post(
+AuthRouter.get(
     '/logout',
     parseRefreshToken,
     (req: Request, res: Response, next: NextFunction) =>
