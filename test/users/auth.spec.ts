@@ -37,34 +37,38 @@ describe('AUTH ROUTES', () => {
     });
 
     describe('POST /auth/register', () => {
-        it('should return 201 status code', async () => {
-            const userData = {
-                firstName: 'Neel',
-                lastName: 'Patel',
-                email: 'neel@gmail.com',
-                password: 'secret123',
-                role: Roles.CUSTOMER,
-            };
+        describe('Given All Fields', () => {
+            it('should return 201 status code', async () => {
+                const userData = {
+                    firstName: 'Neel',
+                    lastName: 'Patel',
+                    email: 'neel@gmail.com',
+                    password: 'secret123',
+                    role: Roles.CUSTOMER,
+                };
 
-            const res = await request(app).post('/auth/register').send(userData);
-            expect(res.statusCode).toBe(201);
-        });
+                const response: Response = await request(app)
+                    .post('/auth/register')
+                    .send(userData);
 
-        it('should return valid JSON format', async () => {
-            const userData = {
-                firstName: 'Neel',
-                lastName: 'Patel',
-                email: 'neel@gmail.com',
-                password: 'secret123',
-                role: Roles.CUSTOMER,
-            };
+                expect(response.statusCode).toBe(201);
+            });
+
+            it('should return valid json format', async () => {
+                const userData = {
+                    firstName: 'Neel',
+                    lastName: 'Patel',
+                    email: 'neel@gmail.com',
+                    password: 'secret123',
+                    role: Roles.CUSTOMER,
+                };
 
                 const response: Response = await request(app)
                     .post('/auth/register')
                     .send(userData);
 
                 expect(response.headers['content-type']).toEqual(
-                    expect.stringContaining('json')
+                    expect.stringContaining('json'),
                 );
             });
 
@@ -77,41 +81,44 @@ describe('AUTH ROUTES', () => {
                     role: Roles.CUSTOMER,
                 };
 
-            await request(app).post('/auth/register').send(userData);
-            const users = await connection.getRepository(User).find();
+                await request(app).post('/auth/register').send(userData);
 
-            expect(users).toHaveLength(1);
-            expect(users[0]).toMatchObject({
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                email: userData.email,
+                const userRepository = connection.getRepository(User);
+                const users = await userRepository.find();
+
+                expect(users).toHaveLength(1);
+                expect(users[0].firstName).toBe(userData.firstName);
+                expect(users[0].lastName).toBe(userData.lastName);
+                expect(users[0].email).toBe(userData.email);
             });
-        });
 
-        it('should store hashed password in the database', async () => {
-            const userData = {
-                firstName: 'Ved',
-                lastName: 'Veghani',
-                email: 'ved@gmail.com',
-                password: 'ved123',
-                role: Roles.CUSTOMER,
-            };
+            it('should store hashed password in database', async () => {
+                const userData = {
+                    firstName: 'Ved',
+                    lastName: 'Veghani',
+                    email: 'ved@gmail.com',
+                    password: 'ved123',
+                    role: Roles.CUSTOMER,
+                };
 
-            await request(app).post('/auth/register').send(userData);
-            const user = await connection.getRepository(User).findOneBy({ email: userData.email });
+                await request(app).post('/auth/register').send(userData);
 
-            expect(user?.password).not.toBe(userData.password);
-            expect(user?.password).toMatch(/^\$2b\$/);
-        });
+                const userRepository = connection.getRepository(User);
+                const users = await userRepository.find();
 
-        it('should return access and refresh tokens in cookies', async () => {
-            const userData = {
-                firstName: 'Neel',
-                lastName: 'Patel',
-                email: 'neel@gmail.com',
-                password: 'secret123',
-                role: Roles.CUSTOMER,
-            };
+                expect(users[0].password).not.toBe(userData.password);
+                expect(users[0].password).toHaveLength(60);
+                expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
+            });
+
+            it('should return access token and refresh token in cookies', async () => {
+                const userData = {
+                    firstName: 'Neel',
+                    lastName: 'Patel',
+                    email: 'neel@gmail.com',
+                    password: 'secret123',
+                    role: Roles.CUSTOMER,
+                };
 
                 const response: Response = await request(app)
                     .post('/auth/register')
@@ -122,89 +129,103 @@ describe('AUTH ROUTES', () => {
 
                 const cookies = response.headers['set-cookie'] || [];
 
-                if(Array.isArray(cookies)){
+                if (Array.isArray(cookies)) {
                     cookies.forEach((cookie: string) => {
-                    if (cookie.startsWith('accessToken')) {
-                        accessToken = cookie.split(';')[0].split('=')[1];
-                    }
-                    if (cookie.startsWith('refreshToken')) {
-                        refreshToken = cookie.split(';')[0].split('=')[1];
-                    }
-                });
-
+                        if (cookie.startsWith('accessToken')) {
+                            accessToken = cookie.split(';')[0].split('=')[1];
+                        }
+                        if (cookie.startsWith('refreshToken')) {
+                            refreshToken = cookie.split(';')[0].split('=')[1];
+                        }
+                    });
                 }
-                
+
                 expect(accessToken).not.toBeNull();
                 expect(refreshToken).not.toBeNull();
-                expect(isJWT(accessToken!)).toBeTruthy();
-                expect(isJWT(refreshToken!)).toBeTruthy();
+                expect(isJWT(accessToken)).toBeTruthy();
+                expect(isJWT(refreshToken)).toBeTruthy();
             });
 
-        it('should store refresh token in database', async () => {
-            const userData = {
-                firstName: 'Mohit',
-                lastName: 'Singh',
-                email: 'mohit@gmail.com',
-                password: 'secret',
-                role: Roles.CUSTOMER,
-            };
+            it('should store refresh token in database', async () => {
+                const userData = {
+                    firstName: 'Mohit',
+                    lastName: 'Singh',
+                    email: 'mohit@gmail.com',
+                    password: 'secret',
+                    role: Roles.CUSTOMER,
+                };
 
                 const response: Response = await request(app)
                     .post('/auth/register')
                     .send(userData);
 
-                const refreshTokenRepository = connection.getRepository(RefreshToken);
+                const refreshTokenRepository =
+                    connection.getRepository(RefreshToken);
                 const tokens = await refreshTokenRepository.find({
                     where: { user: { id: response.body.user.id } },
                     relations: ['user'],
                 });
 
-            expect(refreshTokens).toHaveLength(1);
+                expect(tokens).toHaveLength(1);
+            });
         });
 
-        it('should return 400 if firstName is missing', async () => {
-            const userData = {
-                firstName: '',
-                lastName: 'Patel',
-                email: 'neel@gmail.com',
-                password: 'secret123',
-                role: Roles.CUSTOMER,
-            };
+        describe('Missing Fields', () => {
+            it('should return 400 if firstName is missing', async () => {
+                const userData = {
+                    firstName: '',
+                    lastName: 'Patel',
+                    email: 'neel@gmail.com',
+                    password: 'secret123',
+                    role: Roles.CUSTOMER,
+                };
 
-            const res = await request(app).post('/auth/register').send(userData);
-            expect(res.statusCode).toBe(400);
-        });
+                const response: Response = await request(app)
+                    .post('/auth/register')
+                    .send(userData);
 
-        it('should return 400 if email already exists', async () => {
-            const userData = {
-                firstName: 'Neel',
-                lastName: 'Patel',
-                email: 'neel@gmail.com',
-                password: 'secret123',
-                role: Roles.CUSTOMER,
-            };
+                expect(response.statusCode).toBe(400);
+            });
 
-            await connection.getRepository(User).save(userData);
-            const res = await request(app).post('/auth/register').send(userData);
-            expect(res.statusCode).toBe(400);
+            it('should return 400 if email already exists', async () => {
+                const userData = {
+                    firstName: 'Neel',
+                    lastName: 'Patel',
+                    email: 'neel@gmail.com',
+                    password: 'secret123',
+                    role: Roles.CUSTOMER,
+                };
+
+                const userRepository = connection.getRepository(User);
+                await userRepository.save(userData);
+
+                const response: Response = await request(app)
+                    .post('/auth/register')
+                    .send(userData);
+
+                expect(response.statusCode).toBe(400);
+            });
         });
     });
 
     describe('POST /auth/login', () => {
-        it('should login user and return tokens', async () => {
-            const hashedPassword = await bcrypt.hash('secret', 10);
-            await connection.getRepository(User).save({
-                firstName: 'Ram',
-                lastName: 'Lakhan',
-                email: 'ram@gmail.com',
-                password: hashedPassword,
-                role: Roles.CUSTOMER,
-            });
+        describe('Given Valid Credentials', () => {
+            it('should login user and return tokens', async () => {
+                const userRepository = connection.getRepository(User);
+                const hashedPassword = await bcrypt.hash('secret', 10);
 
-            const res = await request(app).post('/auth/login').send({
-                email: 'ram@gmail.com',
-                password: 'secret',
-            });
+                await userRepository.save({
+                    firstName: 'Ram',
+                    lastName: 'Lakhan',
+                    email: 'ram@gmail.com',
+                    password: hashedPassword,
+                    role: Roles.CUSTOMER,
+                });
+
+                const loginData = {
+                    email: 'ram@gmail.com',
+                    password: 'secret',
+                };
 
                 const response: Response = await request(app)
                     .post('/auth/login')
@@ -214,63 +235,77 @@ describe('AUTH ROUTES', () => {
                 let refreshToken: string | null = null;
 
                 const cookies = response.headers['set-cookie'] || [];
-                if(Array.isArray(cookies)){
-                     cookies.forEach((cookie: string) => {
-                    if (cookie.startsWith('accessToken')) {
-                        accessToken = cookie.split(';')[0].split('=')[1];
-                    }
-                    if (cookie.startsWith('refreshToken')) {
-                        refreshToken = cookie.split(';')[0].split('=')[1];
-                    }
-                });
+                if (Array.isArray(cookies)) {
+                    cookies.forEach((cookie: string) => {
+                        if (cookie.startsWith('accessToken')) {
+                            accessToken = cookie.split(';')[0].split('=')[1];
+                        }
+                        if (cookie.startsWith('refreshToken')) {
+                            refreshToken = cookie.split(';')[0].split('=')[1];
+                        }
+                    });
                 }
-               
 
                 expect(response.statusCode).toBe(200);
                 expect(accessToken).not.toBeNull();
                 expect(refreshToken).not.toBeNull();
-                expect(isJWT(accessToken!)).toBeTruthy();
-                expect(isJWT(refreshToken!)).toBeTruthy();
+                expect(isJWT(accessToken)).toBeTruthy();
+                expect(isJWT(refreshToken)).toBeTruthy();
             });
         });
 
-        it('should return 400 for wrong password', async () => {
-            const hashedPassword = await bcrypt.hash('secret', 10);
-            await connection.getRepository(User).save({
-                firstName: 'Ram',
-                lastName: 'Lakhan',
-                email: 'ram@gmail.com',
-                password: hashedPassword,
-                role: Roles.CUSTOMER,
+        describe('Given Invalid Credentials', () => {
+            it('should return 400 for wrong password', async () => {
+                const userRepository = connection.getRepository(User);
+                const hashedPassword = await bcrypt.hash('secret', 10);
+
+                await userRepository.save({
+                    firstName: 'Ram',
+                    lastName: 'Lakhan',
+                    email: 'ram@gmail.com',
+                    password: hashedPassword,
+                    role: Roles.CUSTOMER,
+                });
+
+                const loginData = {
+                    email: 'ram@gmail.com',
+                    password: 'wrongpassword',
+                };
+
+                const response: Response = await request(app)
+                    .post('/auth/login')
+                    .send(loginData);
+
+                expect(response.statusCode).toBe(400);
             });
 
-            const res = await request(app).post('/auth/login').send({
-                email: 'ram@gmail.com',
-                password: 'wrongpassword',
+            it('should return 404 for non-existent user', async () => {
+                const loginData = {
+                    email: 'nonexistent@gmail.com',
+                    password: 'secret',
+                };
+
+                const response: Response = await request(app)
+                    .post('/auth/login')
+                    .send(loginData);
+
+                expect(response.statusCode).toBe(404);
             });
-
-            expect(res.statusCode).toBe(400);
-        });
-
-        it('should return 404 for non-existent user', async () => {
-            const res = await request(app).post('/auth/login').send({
-                email: 'notfound@gmail.com',
-                password: 'secret',
-            });
-
-            expect(res.statusCode).toBe(404);
         });
     });
 
     describe('GET /auth/self', () => {
         it('should return current user data', async () => {
-            const savedUser = await connection.getRepository(User).save({
+            const userData = {
                 firstName: 'Mohit',
                 lastName: 'Singh',
                 email: 'mohit@gmail.com',
                 password: 'secret',
                 role: Roles.CUSTOMER,
-            });
+            };
+
+            const userRepository = connection.getRepository(User);
+            const savedUser = await userRepository.save(userData);
 
             const accessToken = jwks.token({
                 sub: String(savedUser.id),
@@ -278,16 +313,20 @@ describe('AUTH ROUTES', () => {
                 email: savedUser.email,
             });
 
-            const res = await request(app)
+            const response: Response = await request(app)
                 .get('/auth/self')
-                .set('Cookie', [`accessToken=${accessToken}`]);
+                .set('Cookie', [`accessToken=${accessToken}`])
+                .send();
 
-            expect(res.statusCode).toBe(200);
-            expect(res.body.email).toBe(savedUser.email);
+            expect(response.statusCode).toBe(200);
+            expect(response.body.id).toBe(savedUser.id);
+            expect(response.body.email).toBe(savedUser.email);
         });
 
         it('should return 401 without token', async () => {
-            const response: Response = await request(app).get('/auth/self').send();
+            const response: Response = await request(app)
+                .get('/auth/self')
+                .send();
             expect(response.statusCode).toBe(401);
         });
     });
@@ -295,7 +334,8 @@ describe('AUTH ROUTES', () => {
     describe('POST /auth/refresh', () => {
         it('should refresh tokens', async () => {
             const userRepository = connection.getRepository(User);
-            const refreshTokenRepository = connection.getRepository(RefreshToken);
+            const refreshTokenRepository =
+                connection.getRepository(RefreshToken);
 
             const userData = {
                 firstName: 'Test',
@@ -303,24 +343,41 @@ describe('AUTH ROUTES', () => {
                 email: 'test@gmail.com',
                 password: 'secret',
                 role: Roles.CUSTOMER,
-            });
+            };
 
             const savedUser = await userRepository.save(userData);
             const refreshTokenData = await refreshTokenRepository.save({
                 user: savedUser,
                 expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+                relations: ['users'],
             });
 
-            const refreshToken = jwks.token({
+            const payload: JwtPayload = {
                 sub: String(savedUser.id),
                 role: savedUser.role,
+                firstname: savedUser.firstName,
+                lastName: savedUser.lastName,
                 email: savedUser.email,
                 id: refreshTokenData.id,
-            });
+            };
+            const refreshToken = sign(
+                payload,
 
-            const res = await request(app)
+                `${serverConfig.REFRESH_TOKEN_SECRET!}`,
+                {
+                    algorithm: 'HS256',
+                    expiresIn: '1y',
+                    issuer: 'auth-server',
+                    jwtid: String(payload.id),
+                },
+            );
+
+            const response: Response = await request(app)
                 .post('/auth/refresh')
-                .set('Cookie', [`refreshToken=${refreshToken}`]);
+                .set('Cookie', [`refreshToken=${refreshToken}`])
+                .send();
+
+            console.log(response.body as Record<string, string>);
 
             expect(response.statusCode).toBe(200);
             expect(response.body.success).toBe('True');
@@ -330,7 +387,8 @@ describe('AUTH ROUTES', () => {
     describe('POST /auth/logout', () => {
         it('should logout user and clear tokens', async () => {
             const userRepository = connection.getRepository(User);
-            const refreshTokenRepository = connection.getRepository(RefreshToken);
+            const refreshTokenRepository =
+                connection.getRepository(RefreshToken);
 
             const userData = {
                 firstName: 'Test',
@@ -338,27 +396,44 @@ describe('AUTH ROUTES', () => {
                 email: 'test@gmail.com',
                 password: 'secret',
                 role: Roles.CUSTOMER,
+            };
+
+            const savedUser = await userRepository.save(userData);
+            const refreshTokenData = await refreshTokenRepository.save({
+                user: savedUser,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
             });
 
-            const token = await connection.getRepository(RefreshToken).save({
-                user,
-                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-            });
-
-            const refreshToken = jwks.token({
+            const payload: JwtPayload = {
                 sub: String(savedUser.id),
                 role: savedUser.role,
+                firstname: savedUser.firstName,
+                lastName: savedUser.lastName,
                 email: savedUser.email,
                 id: refreshTokenData.id,
-            });
+            };
+            const refreshToken = sign(
+                payload,
+                `${serverConfig.REFRESH_TOKEN_SECRET!}`,
+                {
+                    algorithm: 'HS256',
+                    expiresIn: '1y',
+                    issuer: 'auth-server',
+                    jwtid: String(payload.id),
+                },
+            );
+
+            console.log('RefreshTokenChecking::', refreshToken);
 
             const response: Response = await request(app)
-                .post('/auth/logout')
+                .get('/auth/logout')
                 .set('Cookie', [`refreshToken=${refreshToken}`])
                 .send();
 
             expect(response.statusCode).toBe(200);
-            expect(response.body.message).toBe('User has been SuccesFully log out');
+            expect(response.body.message).toBe(
+                'User has been SuccesFully log out',
+            );
         });
     });
 });
