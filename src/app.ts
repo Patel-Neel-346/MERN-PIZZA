@@ -14,7 +14,7 @@ const publicDirPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDirPath));
 
 app.get('/', (_req: express.Request, res: express.Response) => {
-    res.send('Hello World Neel Patel! HI Neel Patel :)');
+    res.send('Hello World Neel Patel! HI Neel Patel..:)');
 });
 //routes
 app.use('/auth', AuthRouter);
