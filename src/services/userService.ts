@@ -3,7 +3,7 @@ import { User } from '../entity/User';
 import { LimitedUserData, PaginationParams, UserData } from '../types';
 import createHttpError from 'http-errors';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
@@ -16,7 +16,7 @@ export class UserService {
         role,
         tenantId,
     }: UserData) {
-         const user = await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where: { email: email },
         });
 

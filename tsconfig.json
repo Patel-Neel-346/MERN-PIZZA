@@ -14,6 +14,6 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  "include": ["src", "scripts"],
-  "exclude": ["node_modules", "dist","test","coverage","logs",".husky"]
+  "include": ["src", "scripts","test"],
+  "exclude": ["node_modules", "dist","coverage","logs",".husky"]
 }
