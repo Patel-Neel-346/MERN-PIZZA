@@ -14,4 +14,7 @@ export const AppDataSource = new DataSource({
     entities: ['src/entity/*.{ts,js}'],
     migrations: ['src/migration/*.{ts,js}'],
     subscribers: [],
+    ssl:{
+        rejectUnauthorized:false
+    }
 });
