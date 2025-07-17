@@ -20,8 +20,6 @@ export class UserController {
         res: Response,
         next: NextFunction,
     ) {
-      
-
         const { firstName, lastName, email, password, tenantId, role } =
             req.body;
 

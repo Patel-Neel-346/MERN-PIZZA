@@ -54,10 +54,8 @@ export class AuthController {
                 lastName: user.lastName,
                 email: user.email,
             };
-        
-            const accessToken = this.tokenService.generateAccessToken(
-                payload,
-            );
+
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
             const newRefreshToken: RefreshToken =
                 await this.tokenService.persistRefreshToken(user);
@@ -138,10 +136,7 @@ export class AuthController {
                 payload.tenant = user.tenats?.id;
             }
 
-            const accessToken = this.tokenService.generateAccessToken(
-                payload,
-               
-            );
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
             const newRefreshToken =
                 await this.tokenService.persistRefreshToken(user);
@@ -202,11 +197,8 @@ export class AuthController {
             }
             if (user.role === Roles.MANAGER) {
                 payload.tenant = user.tenats?.id;
-            }  
-            const accessToken = this.tokenService.generateAccessToken(
-                payload,
-            
-            );
+            }
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
             const newRefreshToken =
                 await this.tokenService.persistRefreshToken(user);

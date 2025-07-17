@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { serverConfig } from '.';
 
-
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: serverConfig.DB_HOST,

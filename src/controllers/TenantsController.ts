@@ -33,8 +33,6 @@ export class TenantsController {
                 id: tenant.id,
             });
 
-        
-
             res.status(201).json(tenant);
         } catch (error) {
             next(error);
@@ -46,7 +44,6 @@ export class TenantsController {
         res: Response,
         next: NextFunction,
     ) {
-        
         const result = validationResult(req);
 
         if (!result.isEmpty()) {
@@ -108,8 +105,8 @@ export class TenantsController {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             const error = createHttpError(400, 'Invaid req');
-            next(error)
-            return
+            next(error);
+            return;
         }
         const tenantId = req.params.id;
         console.log('TenantID', tenantId);

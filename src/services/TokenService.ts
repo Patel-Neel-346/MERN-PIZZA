@@ -13,7 +13,9 @@ export class TokenService {
 
     generateAccessToken(payload: JwtPayload) {
         try {
-            const PrivateKey = serverConfig.PRIVATE_KEY ? serverConfig.PRIVATE_KEY : loadPrivateKey();
+            const PrivateKey = serverConfig.PRIVATE_KEY
+                ? serverConfig.PRIVATE_KEY
+                : loadPrivateKey();
             const accessToken = sign(payload, PrivateKey, {
                 algorithm: 'RS256',
                 expiresIn: '1h',
@@ -35,10 +37,7 @@ export class TokenService {
     }
 
     generateRefreshToken(payload: JwtPayload) {
-  
-
         try {
-
             const refreshToken = sign(
                 payload,
                 serverConfig.REFRESH_TOKEN_SECRET!,

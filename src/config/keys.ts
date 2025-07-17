@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config(); 
+dotenv.config();
 export function loadPrivateKey(): string {
     const envPath = process.env.PRIVATE_KEY_PATH;
 
