@@ -13,6 +13,7 @@ export class TokenService {
 
     generateAccessToken(payload: JwtPayload) {
         try {
+             
             const PrivateKey = serverConfig.PRIVATE_KEY
                 ? serverConfig.PRIVATE_KEY
                 : loadPrivateKey();

@@ -18,7 +18,8 @@ const {
   REFRESH_TOKEN_SECRET,
   PRIVATE_KEY_PATH,
   JWKS_URL,
-  DATABASE_URL, // <- new
+  DATABASE_URL,
+  PRIVATE_KEY, // <- new
 } = process.env;
 
 export const serverConfig = {
@@ -33,5 +34,6 @@ export const serverConfig = {
   REFRESH_TOKEN_SECRET,
   JWKS_URL,
   DATABASE_URL,
+  PRIVATE_KEY,
   DB_SSL: NODEENV !== 'dev', // SSL for CI/production
 };
