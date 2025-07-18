@@ -26,22 +26,14 @@ jobs:
       - name: Run TypeORM Migrations
         run: npm run migration:run
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Test and Coverage
         run: |
           export NODE_OPTIONS="--dns-result-order=ipv4first"
           npm run test
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           JWKS_URI: ${{ secrets.JWKS_URI }}

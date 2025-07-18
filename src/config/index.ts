@@ -1,11 +1,10 @@
 import { config } from 'dotenv';
 import path from 'path';
 
-// Load .env.dev in dev mode, otherwise use system env (like GitHub Actions)
 if (process.env.NODEENV === 'dev') {
   config({ path: path.join(__dirname, '../../.env.dev') });
 } else {
-  config(); // Use system env (GitHub secrets in Actions)
+  config(); // GitHub Actions or production
 }
 
 const {
@@ -17,8 +16,9 @@ const {
   DB_NAME,
   DB_USERNAME,
   REFRESH_TOKEN_SECRET,
-  PRIVATE_KEY,
+  PRIVATE_KEY_PATH,
   JWKS_URL,
+  DATABASE_URL, // <- new
 } = process.env;
 
 export const serverConfig = {
@@ -29,8 +29,9 @@ export const serverConfig = {
   DB_PASSWORD,
   DB_NAME,
   DB_USERNAME,
-  PRIVATE_KEY,
+  PRIVATE_KEY_PATH,
   REFRESH_TOKEN_SECRET,
   JWKS_URL,
-  DB_SSL: NODEENV !== 'dev', // use SSL in CI/production
+  DATABASE_URL,
+  DB_SSL: NODEENV !== 'dev', // SSL for CI/production
 };
