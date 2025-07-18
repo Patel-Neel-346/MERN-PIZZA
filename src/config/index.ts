@@ -28,4 +28,5 @@ export const serverConfig = {
     PRIVATE_KEY,
     REFRESH_TOKEN_SECRET,
     JWKS_URL,
+    DB_SSL:true
 };
