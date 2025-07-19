@@ -23,7 +23,18 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Check for New Migrations
+        id: migration-check
+        run: |
+          git fetch origin main
+          if git diff --quiet origin/main -- src/migrations; then
+            echo "run_migrations=false" >> $GITHUB_OUTPUT
+          else
+            echo "run_migrations=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run TypeORM Migrations
+        if: steps.migration-check.outputs.run_migrations == 'true'
         run: npm run migration:run
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
