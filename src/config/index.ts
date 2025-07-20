@@ -4,7 +4,7 @@ import path from 'path';
 if (process.env.NODEENV === 'dev') {
   config({ path: path.join(__dirname, '../../.env.dev') });
 } else {
-  config(); // GitHub Actions or production
+  config({ path: path.join(__dirname, '../../.env.prod')}); // GitHub Actions or production
 }
 
 const {
